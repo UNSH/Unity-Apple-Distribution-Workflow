@@ -79,7 +79,7 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 | TranslucentCloud | [PIXEL GRID](https://stackoverflow.com/a/39678276) |..|
 
 ### WORKFLOW
-Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for this page.
+Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
 
 | WHAT | WHO |
 |:--|:--|
