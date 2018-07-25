@@ -61,7 +61,7 @@ We do not take credit for anything besides creating this workflow, tying the cod
 
 We created this workflow because delivering a Unity build to Apple is a mess and the answer is spread across several websites which makes it hard to wrap your head around the correct final chronology especially if you're new or on Windows.
 
-There are tools out there like [Signed](https://assetstore.unity.com/packages/tools/utilities/mac-app-store-signed-54970) that will also take care of some of this, but often it's better to understand and not depend upon 3rd party assets, especially when things go something wrong. We have tried to include path’s, actions and DIY as much as possible so you can understand what's happening and where everything is supposed to go.
+There are tools out there like [Signed](https://assetstore.unity.com/packages/tools/utilities/mac-app-store-signed-54970) that will also take care of some of this, but often it's better to understand and not depend upon 3rd party assets, especially when things go wrong. We have tried to include paths, actions and DIY as much as possible so you can understand what's happening and where everything is supposed to go.
 
 ### ALL THE BRAVE SOULS WHO PAVED THE ROAD.
 
