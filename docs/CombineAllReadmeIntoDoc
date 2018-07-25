@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+rm "Unity Apple Distribution Workflow.md"
+rm "ReadMe.md"
+
+cat "../ReadMe.md" "../0_BeforeYouBuild/ReadMe.md" "../2_Icons/ReadMe.md" "../3_DeleteMeta/ReadMe.md" "../4_InfoPlist/ReadMe.md" "../5_Entitlements/ReadMe.md" "../6_SignAndPackage/ReadMe.md" "../7_Distribution/ReadMe.md" >>"ReadMe.md"

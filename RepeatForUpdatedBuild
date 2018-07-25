@@ -1,0 +1,46 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+SCRIPT_1="2_Icons/OSX Icon"
+SCRIPT_2="3_DeleteMeta/Delete Meta Files"
+SCRIPT_3="4_InfoPlist/CopyPlist"
+SCRIPT_3A="4_InfoPlist/PluginsReplaceBundleId"
+SCRIPT_4="6_SignAndPackage/SignAndPackage"
+
+echo " "
+echo "+-----------------------------------------------------------------------------+"
+echo "|                    UPDATE YOUR BUILD WITH CURRENT VALUES ?                  |"
+echo "+-----------------------------------------------------------------------------+"
+echo " "
+echo "Use this if you have to repeat the process or put everything where it's supposed to. If you are note sure check the readme"
+echo " "
+printf '\e[1m'
+echo -e "\033[5mDO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS\033[0m"
+printf '\e[1m'
+echo "Continue? (y/n)"
+
+while read -r cont
+do
+    if [ "$cont" = "y" ]; then
+        printf '\e[0m'
+        bash "$SCRIPT_1"
+        bash "$SCRIPT_2"
+        bash "$SCRIPT_3"
+        bash "$SCRIPT_3A"
+        bash "$SCRIPT_4"
+        break
+    elif [ "$cont" = "n" ]; then
+        exit 0
+        break
+    else
+        echo "Wrong input"
+    fi
+done
+
+
+echo "You're all set for approval."
+echo " " 
+exit 0
+

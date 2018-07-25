@@ -1,0 +1,133 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+FILE="$(sips -x FilePath Icon1024.png)"
+
+WIDTH="$(sips -g pixelWidth Icon1024.png)" 
+WIDTH=$(echo $WIDTH | cut -c$((${#FILE}+14))- )
+
+HEIGHT="$(sips -g pixelHeight Icon1024.png)"
+HEIGHT=$(echo $HEIGHT | cut -c$((${#FILE}+15))- )
+
+DPI="$(sips -g dpiWidth Icon1024.png)"
+DPI=$(echo $DPI | cut -c$((${#FILE}+12))- )
+DPI=$(echo "($DPI + 0.5) / 1" | bc )
+
+PROFILE="$(sips -g profile Icon1024.png)"
+PROFILE=$(echo $PROFILE | cut -c$((${#FILE}+11))- )
+
+FORMAT="$(sips -g format Icon1024.png)"
+FORMAT=$(echo $FORMAT | cut -c$((${#FILE}+10))- )
+
+ALPHA="$(sips -g hasAlpha Icon1024.png)"
+ALPHA=$(echo $ALPHA | cut -c$((${#FILE}+12))-)
+
+SQUARE=$(echo $HEIGHT / $WIDTH | bc ) 
+
+rm -R FilePath
+
+chmod -R a+xr "$appDir"
+
+echo " "
+echo "+------------------------------------------------------------------+"
+echo "|            Creating Icon file & UnityPlayerIcon.png              |"
+echo "+------------------------------------------------------------------+"
+echo " "
+
+printf '\e[1m' 
+echo "Your Icon1024.png file"
+echo "$WIDTH pixels / $HEIGHT pixels - $DPI dpi"
+echo "color profile : $PROFILE"
+echo "filetype : $FORMAT"
+echo "Alpha Channel : $ALPHA" 
+echo " "
+printf '\e[0m' 
+
+if [[ $PROFILE != *"sRGB"* ]]
+then
+    printf '\e[1m'
+    echo "Wrong Color profile, changing to sRGB ... "
+    sips -m "/System/Library/Colorsync/Profiles/sRGB Profile.icc" Icon1024.png --out Icon1024.png
+    printf '\e[0m'
+fi
+
+if [ $FORMAT != "png" ]
+then
+    printf '\e[38;5;196m' 
+    echo "Icon1024 is NOT a png file"
+    printf '\e[38;5;0m'
+    exit
+elif [ $WIDTH -lt 1024 ] 
+then
+    printf '\e[38;5;196m' 
+    echo "Width below minimum $WIDTH/1024px"
+    printf '\e[38;5;0m'
+    exit
+elif [ $HEIGHT -lt 1024 ]
+then
+    printf '\e[38;5;196m' 
+    echo "Height below minimum $HEIGHT/1024px"
+    printf '\e[38;5;0m'
+    exit
+elif [ $SQUARE -ne 1 ]
+then
+    printf '\e[38;5;196m' 
+    echo "Image is not a perfect square. Height below minimum $HEIGHT/1024px "
+    printf '\e[38;5;0m'
+    exit
+
+elif [ $ALPHA != yes ]
+then
+    printf '\e[38;5;196m' 
+    echo "Png has no alpha channel. Export file in preview with has alpha channel checked."
+    printf '\e[38;5;0m'
+    exit
+
+else
+    echo " "
+    printf '\e[2m'
+    mkdir IconsIOS
+    mkdir IconsIOS/iPhone
+    mkdir IconsIOS/iPad
+   
+    sips Icon1024.png -s format tiff -s dpiHeight 72.000 -s dpiWidth 72.000 --out Icon_72dpi.tiff
+        
+    sips -z 40 40 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_20x20@2x.png
+    sips -z 60 60 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_20x20@3x.png
+
+    sips -z 58 58 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_29x29@2x.png
+    sips -z 87 87 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_29x29@3x.png
+
+    sips -z 80 80 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_40x40@2x.png
+    sips -z 120 120 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_40x40@3x.png
+
+    sips -z 120 120 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_60x60@2x.png
+    sips -z 180 180 Icon_72dpi.tiff -s format png --out IconsIOS/iPhone/icon_60x60@3x.png
+
+
+    sips -z 20 20 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_20x20@1x.png
+    sips -z 40 40 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_20x20@2x.png
+
+ 
+    sips -z 29 29 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_29x29@1x.png
+    sips -z 58 58 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_29x29@2x.png
+ 
+    sips -z 40 40 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_40x40@1x.png
+    sips -z 80 80 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_40x40@2x.png
+ 
+    sips -z 76 76 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_76x76@1x.png
+    sips -z 152 152 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_76x76@2x.png
+ 
+    sips -z 167 167 Icon_72dpi.tiff -s format png --out IconsIOS/iPad/icon_83.5x83.5@2x.png
+
+    rm -R Icon_72dpi.tiff
+
+    exit 0
+
+fi
+
+

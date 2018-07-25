@@ -1,0 +1,202 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+FILE="$(sips -x FilePath Icon1024.png)"
+
+WIDTH="$(sips -g pixelWidth Icon1024.png)" 
+WIDTH=$(echo $WIDTH | cut -c$((${#FILE}+14))- )
+
+HEIGHT="$(sips -g pixelHeight Icon1024.png)"
+HEIGHT=$(echo $HEIGHT | cut -c$((${#FILE}+15))- )
+
+PROFILE="$(sips -g profile Icon1024.png)"
+PROFILE=$(echo $PROFILE | cut -c$((${#FILE}+11))- )
+
+FORMAT="$(sips -g format Icon1024.png)"
+FORMAT=$(echo $FORMAT | cut -c$((${#FILE}+10))- )
+
+ALPHA="$(sips -g hasAlpha Icon1024.png)"
+ALPHA=$(echo $ALPHA | cut -c$((${#FILE}+12))-)
+
+SQUARE=$(echo $HEIGHT / $WIDTH | bc ) 
+
+osxIcon=`find "MyOsxIcon/" -name "*.icns" -print -maxdepth 1`
+
+unityIcon=`find "MyUnityPlayerIcon/" -name "*.png" -print -maxdepth 1`
+
+rm -R FilePath
+
+chmod -R a+xr "$appDir"
+
+echo " "
+echo "+------------------------------------------------------------------+"
+echo "|              PlayerIcon.icns & UnityPlayerIcon.png               |"
+echo "+------------------------------------------------------------------+"
+echo " "
+
+if ! [ -z "$unityIcon" ] && ! [ -z "$osxIcon" ]; then
+    echo "Using your .icns file @ 1_Icons/MyOsxIcon/"
+    echo "Using your .png file @ 1_Icons/MyUnityPlayerIcon/"
+    echo " "
+    cp "MyUnityPlayerIcon/UnityPlayerIcon.png" "$appDir/Contents/Resources/UnityPlayerIcon.png"
+    cp "MyOsxIcon/PlayerIcon.icns" "$appDir/Contents/Resources/PlayerIcon.icns"      
+    echo "DONE! Copied to $appDir/Contents/Resources/"
+    echo " "
+    exit 0
+fi
+
+
+printf '\e[1m' 
+echo "Your Icon1024.png file"
+echo "$WIDTH pixels / $HEIGHT pixels"
+echo "color profile : $PROFILE"
+echo "filetype : $FORMAT"
+echo "Alpha Channel : $ALPHA" 
+echo " "
+printf '\e[0m' 
+
+echo "+---------------------+--------------------+--------------+"
+echo "|      filename       | resolution, pixels | density, PPI |"
+echo "+---------------------+--------------------+--------------+"
+echo "| icon_16x16.png      | 16x16              |           72 |"
+echo "| icon_16x16@2x.png   | 32x32              |          144 |"
+echo "| icon_32x32.png      | 32x32              |           72 |"
+echo "| icon_32x32@2x.png   | 64x64              |          144 |"
+echo "| icon_128x128.png    | 128x128            |           72 |"
+echo "| icon_128x128@2x.png | 256x256            |          144 |"
+echo "| icon_256x256.png    | 256x256            |           72 |"
+echo "| icon_256x256@2x.png | 512x512            |          144 |"
+echo "| icon_512x512.png    | 512x512            |           72 |"
+echo "| icon_512x512@2x.png | 1024x1024          |          144 |"
+echo "+---------------------+--------------------+--------------+"
+
+
+if [[ $PROFILE != *"sRGB"* ]]
+then
+    printf '\e[1m'
+    echo "Wrong Color profile, changing to sRGB ... "
+    sips -m "/System/Library/Colorsync/Profiles/sRGB Profile.icc" Icon1024.png --out Icon1024.png
+    printf '\e[0m'
+fi
+
+if [ $FORMAT != "png" ]
+then
+    printf '\e[38;5;196m' 
+    echo "Icon1024 is NOT a png file"
+    printf '\e[38;5;0m'
+    exit
+elif [ $WIDTH -lt 1024 ] 
+then
+    printf '\e[38;5;196m' 
+    echo "Width below minimum $WIDTH/1024px"
+    printf '\e[38;5;0m'
+    exit
+elif [ $HEIGHT -lt 1024 ]
+then
+    printf '\e[38;5;196m' 
+    echo "Height below minimum $HEIGHT/1024px"
+    printf '\e[38;5;0m'
+    exit
+elif [ $SQUARE -ne 1 ]
+then
+    printf '\e[38;5;196m' 
+    echo "Image is not a perfect square. Height below minimum $HEIGHT/1024px "
+    printf '\e[38;5;0m'
+    exit
+
+elif [ $ALPHA != yes ]
+then
+    printf '\e[38;5;196m' 
+    echo "Png has no alpha channel. Export file in preview with has alpha channel checked."
+    printf '\e[38;5;0m'
+    exit
+
+else
+    echo " "
+
+    printf '\e[2m'
+
+    mkdir MyIcon.iconset
+    
+    sips Icon1024.png -s format tiff -s dpiHeight 72.000 -s dpiWidth 72.000 --out Icon_72dpi.tiff
+
+    sips -z 16 16 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_16x16.png    
+    
+    sips -z 32 32 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_16x16@2x.png  
+
+    sips -z 32 32 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_32x32.png
+    
+    sips -z 64 64 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_32x32@2x.png
+    
+    sips -z 128 128 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_128x128.png
+    
+    sips -z 256 256 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_128x128@2x.png
+    
+    sips -z 256 256 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_256x256.png
+    
+    sips -z 512 512 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_256x256@2x.png
+    
+    sips -z 512 512 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_512x512.png
+
+    sips -z 1024 1024 Icon_72dpi.tiff -s format png --out MyIcon.iconset/icon_512x512@2x.png
+
+    sips -z 64 64 Icon_72dpi.tiff -s format png --out UnityPlayerIcon.png
+
+    iconutil -c icns -o PlayerIcon.icns MyIcon.iconset  
+
+    printf '\e[0m'
+    
+    if [ -z "$osxIcon" ]; then
+       echo "Copying new PlayerIcon.icns to your app"
+       echo "@ $appDir/Contents/Resources/PlayerIcon.icns"
+       cp "PlayerIcon.icns" "$appDir/Contents/Resources/PlayerIcon.icns"
+    else
+       echo "Copying saved icns file (from /1_Icons/MyOsxIcon/PlayerIcon.icns) to your app"
+       echo "@ $appDir/Contents/Resources/PlayerIcon.icns"
+       cp "MyOsxIcon/PlayerIcon.icns" "$appDir/Contents/Resources/PlayerIcon.icns"
+    fi
+
+    echo " "
+        
+    if [ -z "$unityIcon" ]; then
+       echo "Copying new UnityPlayerIcon.png to your app"
+       echo "@ $appDir/Contents/Resources/UnityPlayerIcon.png"
+       cp "UnityPlayerIcon.png" "$appDir/Contents/Resources/UnityPlayerIcon.png"
+    else
+       echo "Copying saved icns file (from /1_Icons/MyUnityPlayerIcon/UnityPlayerIcon.png) to your app"
+       echo "@ $appDir/Contents/Resources/UnityPlayerIcon.png"
+       cp "MyUnityPlayerIcon/UnityPlayerIcon.png" "$appDir/Contents/Resources/UnityPlayerIcon.png"
+    fi
+
+    echo " "
+    printf '\e[1m'
+    echo " "
+    echo "DONE! Delete icon images clutter? (y/n)"
+    printf '\e[0m'
+
+    while read -r removeFiles
+    do
+        if [ "$removeFiles" = "y" ]; then
+             rm -R MyIcon.iconset
+             rm -R Icon_72dpi.tiff
+             rm -R PlayerIcon.icns
+             rm -R UnityPlayerIcon.png
+             exit 0
+            break
+        elif [ "$removeFiles" = "n" ]; then
+             exit 0
+            break
+        else
+            echo "Wrong input"
+        fi
+    done
+
+    
+
+fi
+
+

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+MyInfoPlist=`find "$PWD" -name "Info.plist" -print -maxdepth 1`
+
+if [ -z "$MyInfoPlist" ]; then
+    printf '\e[1m'
+    echo "ERROR! No Info.plist found!"
+    echo "Place Info.plist in '4_InfoPlist/' folder or run ImportPlistFromYourBuild to import your Unity build Info.plist "   
+    echo " "
+    printf '\e[0m'    
+    exit 0
+fi
+
+echo " "
+echo "+-------------------------------------------------------------------+"
+echo "|                  Add Info.plist to your build.                    |"
+echo "+-------------------------------------------------------------------+"
+echo " "
+
+chmod -R a+xr "$appDir"
+
+echo "DONE! Info.plist copied to $appDir/Contents/Info.plist "
+cp "Info.plist" "$appDir/Contents/Info.plist"
+echo " "
+
+exit 0

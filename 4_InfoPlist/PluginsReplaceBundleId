@@ -1,0 +1,71 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+MyInfoPlist=`find "$PWD" -name "Info.plist" -print -maxdepth 1`
+
+if [ -z "$MyInfoPlist" ]; then
+    printf '\e[1m'
+    echo "ERROR! No Info.plist found!"
+    echo "Place Info.plist in '4_InfoPlist/' folder or run ImportPlistFromYourBuild to import your Unity build Info.plist "   
+    echo " "
+    printf '\e[0m'    
+    exit 0
+fi
+
+echo ""
+echo "+------------------------------------------------------------------+"
+echo "|   Update all Info.plist's in plugins with your BundleIdentifier  |"
+echo "+------------------------------------------------------------------+"
+echo " "
+echo "MyBundleIdentifier : $MyBundleIdentifier"
+echo "-------------------------------------------------------------------"
+
+chmod -R a+xr "$appDir"
+
+LineNumberMyBundleIdentifiere=$(sed -n '/CFBundleIdentifier/=' "Info.plist")
+LineNumberMyBundleIdentifiere="$(($LineNumberMyBundleIdentifiere + 1))"
+
+MyBundleIdentifier=$( sed "${LineNumberMyBundleIdentifiere}q;d" "Info.plist" )
+
+echo " "
+echo "Will replace BundleIdentifiers in YOUR_BUILD/Contents/Plugins/YOUR_PLUGIN_BUNDLES/Info.plist with yours"
+printf '\e[1m'
+echo "Continue? (y/n)"
+printf '\e[0m'
+
+while read -r ChangePlugins
+do
+    if [ "$ChangePlugins" = "y" ]; then
+		for bundle in "$appDir/Contents/Plugins/"*.bundle
+		do
+			PluginInfoPlist=`find "$bundle/Contents" -name "Info.plist" -print -maxdepth 1`
+			
+			if ! [ -z "$PluginInfoPlist" ]; then
+
+				pluginLineNumber=$(sed -n '/CFBundleIdentifier/=' $PluginInfoPlist)
+				pluginLineNumber="$(($pluginLineNumber + 1))"    
+				echo " "
+				echo "MyBundleIdentifier found in $bundle. "
+				echo $( sed "${pluginLineNumber}q;d" "$PluginInfoPlist" ) "replaced with $MyBundleIdentifier"
+				echo " "
+				sed -i "" "$pluginLineNumber"'s,.*, '"$MyBundleIdentifier"',' "$PluginInfoPlist"
+			else
+				"No Info.plist found in this bundle..."
+				break  
+			fi
+		done
+        break
+    elif [ "$ChangePlugins" = "n" ]; then
+        echo "Ok"
+        exit 0
+        break
+    else
+        echo "Wrong input"
+    fi
+done
+echo "DONE!"
+exit 0 

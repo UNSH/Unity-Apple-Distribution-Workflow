@@ -1,0 +1,381 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appfile=`find "../1_MyBuild" -name "*.app" -exec basename {} \;`
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+appName="${appfile%.*}"
+
+APPSTORE_DEV_ProfileDir=`find "../0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development" -name "*.provisionprofile" -print`
+
+APPSTORE_DIST_ProfileDir=`find "../0_BeforeYouBuild/ProvisioningProfiles/AppStore/Distribution" -name "*.provisionprofile" -print`
+
+DEV_ID_ProfileDir=`find "../0_BeforeYouBuild/ProvisioningProfiles/DeveloperID" -name "*.provisionprofile" -print`
+
+appDirDylib=`find "$appDir/Contents/Frameworks" -name "libmono.0.dylib"`
+appDirDylibHelper=`find "$appDir/Contents/Frameworks" -name "libMonoPosixHelper.dylib"`
+
+echo ""
+echo "+------------------------------------------------------------------+"
+echo "|                      Signing and Packaging                       |"
+echo "+------------------------------------------------------------------+"
+echo " "
+
+chmod -R a+xr "$appDir"
+
+locationEntitlements=`find "../5_Entitlements" -name "entitlements.plist" -maxdepth 1`
+
+if [ -z "$locationEntitlements" ]; then
+    printf '\e[1m'
+    echo "ERROR! No entitlements.plist found!"
+    echo "Place entitlements.plist in '5_Entitlements/' folder"   
+    echo " "
+    printf '\e[0m'    
+    exit 0
+fi
+
+LineBundleVersion=$(sed -n '/CFBundleShortVersionString/=' "../4_InfoPlist/Info.plist")
+LineBundleVersion="$(($LineBundleVersion + 1))"
+BundleVersion=$( sed "${LineBundleVersion}q;d" "../4_InfoPlist/Info.plist" | tr -d '\040\011\012\015')
+
+
+LineBundleBuild=$(sed -n '/CFBundleVersion/=' "../4_InfoPlist/Info.plist")
+LineBundleBuild="$(($LineBundleBuild + 1))"
+BundleBuild=$( sed "${LineBundleBuild}q;d" "../4_InfoPlist/Info.plist" | tr -d '\040\011\012\015')
+
+VarRemove_1="<string>"
+VarRemove_2="</string>"
+
+BundleVersion="${BundleVersion//$VarRemove_1/}"
+BundleVersion="${BundleVersion//$VarRemove_2/}"
+
+BundleBuild="${BundleBuild//$VarRemove_1/}"
+BundleBuild="${BundleBuild//$VarRemove_2/}"
+
+FolderVersionName=""
+
+
+echo "Reading version and build from your Info.Plist"
+echo "Version : $BundleVersion"
+echo "Build : $BundleBuild"
+echo " "
+
+if [ "$BundleVersion" = "$BundleBuild" ]; then
+    echo "Info : Version and build use the same value"
+    FolderVersionName="$BundleVersion"
+    echo "Final build folder name will be $FolderVersionName"
+    
+else
+    echo "Info : Version and build use the different values"
+    FolderVersionName="$BundleVersion""b$BundleBuild"
+    echo "Final build folder name will be $FolderVersionName"
+fi
+
+echo " "
+echo "Make sure you always update your build number / version number when uploading new packages to the AppStore..."
+echo " "
+printf '\e[1m'  
+echo "Developer team name?"
+printf '\e[0m'
+echo "Example, without quotes:'MYCOMPANY (FKJLDLKFDG)'"
+printf '\e[1m'
+read DEVNAME
+printf '\e[0m'
+echo " "
+echo "Team Name: [$DEVNAME]"
+echo " "
+printf '\e[1m'  
+echo "Create a build for Appstore Develompent (Testing), Appstore Distribution or Distribution outside the Appstore ?"
+printf '\e[0m'
+echo "Enter without quotes : 'dev', 'appstore' or 'outside' "
+printf '\e[1m'  
+
+while read -r BUILD_FOR
+do
+    if [ "$BUILD_FOR" = "dev" ]; then
+        echo " "
+
+        if [ -z "$APPSTORE_DEV_ProfileDir" ]; then
+            printf '\e[1m'
+            echo "ERROR! No .provisionprofile found!"
+            echo "Place correct .provisionprofile in '0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development' folder"   
+            echo " "
+            printf '\e[0m'    
+            exit 0
+        fi
+
+        printf '\e[0m'
+        echo "Creating testing/development build"
+        break
+
+    elif [ "$BUILD_FOR" = "outside" ]; then
+        echo " "
+        if [ -z "$DEV_ID_ProfileDir" ]; then
+            printf '\e[1m'
+            echo "ERROR! No .provisionprofile found!"
+            echo "Place correct .provisionprofile in '0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/' folder"   
+            echo " "
+            printf '\e[0m'    
+            exit 0
+        fi        
+        printf '\e[0m'
+        echo "Creating package for distribution outside Appstore"
+        break
+        
+    elif [ "$BUILD_FOR" = "appstore" ]; then
+        echo " "
+        if [ -z "$APPSTORE_DIST_ProfileDir" ]; then
+            printf '\e[1m'
+            echo "ERROR! No .provisionprofile found!"
+            echo "Place correct .provisionprofile in '0_BeforeYouBuild/ProvisioningProfiles/Appstore/Distribution' folder"   
+            echo " "
+            printf '\e[0m'    
+            exit 0
+        fi        
+        printf '\e[0m'
+        echo "Creating Appstore build"
+        break
+
+    else
+        echo "Wrong input"
+    fi
+done
+
+echo " "
+echo "Deleting existing profiles (if any) @ $appDir/Contents/"
+find "$appDir/Contents" -name '*.provisionprofile' -delete
+echo " "
+
+if [ "$BUILD_FOR" = "dev" ]; then
+
+    echo "Copying development profile as 'embedded.provisionprofile' to  @ $appDir/Contents/"
+    cp "$APPSTORE_DEV_ProfileDir" "$appDir/Contents/embedded.provisionprofile"
+  
+  elif [ "$BUILD_FOR" = "appstore" ]; then
+    echo "Copying distribution profile as 'embedded.provisionprofile' to @ $appDir/Contents/"
+    cp "$APPSTORE_DIST_ProfileDir" "$appDir/Contents/embedded.provisionprofile"
+  else
+    echo "Copying distribution profile as 'embedded.provisionprofile' to @ $appDir/Contents/"
+    cp "$DEV_ID_ProfileDir" "$appDir/Contents/embedded.provisionprofile"    
+fi
+
+echo " "
+echo " "
+echo " Signing  "
+echo "-------------------------------------------------------------------"
+echo " "
+
+
+if [ "$BUILD_FOR" = "dev" ] ; then 
+  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylib"
+  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylibHelper"
+  for file in "$appDir/Contents/Plugins/"*.bundle
+  do
+      codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$file"
+  done
+  codesign --deep --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDir"
+  
+elif [ "$BUILD_FOR" = "appstore" ] ; then
+  codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylib"
+  codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylibHelper"
+  for file in "$appDir/Contents/Plugins/"*.bundle
+  do
+      codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "3rd Party Mac Developer Application: $DEVNAME" "$file"
+  done
+  codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display -s "3rd Party Mac Developer Application: $DEVNAME" "$appDir"    
+
+elif [ "$BUILD_FOR" = "outside" ] ; then
+  codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "Developer ID Application: $DEVNAME" "$appDirDylib"
+  codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "Developer ID Application: $DEVNAME" "$appDirDylibHelper"
+  for file in "$appDir/Contents/Plugins/"*.bundle
+  do
+      codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "Developer ID Application: $DEVNAME" "$file"
+  done
+  codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display -s "Developer ID Application: $DEVNAME" "$appDir"  
+fi
+
+echo " "
+echo " "
+echo " Veryfing codesign "
+echo "-------------------------------------------------------------------"
+echo " "
+codesign --deep --verify --verbose "$appDir"
+echo " "
+codesign -dv --verbose=4 "$appDir"
+echo " "
+echo " "
+echo " Building Package ...  "
+echo "-------------------------------------------------------------------"
+echo " "
+
+if [ "$BUILD_FOR" = "dev" ]; then
+  mkdir "../7_Distribution/Appstore/Development/$FolderVersionName"
+  echo "Building development pkg : $appName.pkg"
+  OverwriteDev=`find "../7_Distribution/Appstore/Development/$FolderVersionName" -name "$appName.pkg" -maxdepth 1`
+
+  if ! [ -z "$OverwriteDev" ]; then
+      printf '\e[1m'
+      echo " "
+      echo "Package for this build ($FolderVersionName) found in directory! Overwrite? (y/n)"
+      echo "Make sure you always update your build number / version number when uploading new packages to the AppStore..."
+      printf '\e[0m'
+      while read -r OVERWRITE_DevBuild
+      do
+          if [ "$OVERWRITE_DevBuild" = "y" ]; then
+              echo " "
+              echo "Replacing zipped build "
+              rm "../7_Distribution/Appstore/Development/$FolderVersionName/$appName.pkg"
+              break
+
+          elif [ "$OVERWRITE_DevBuild" = "n" ]; then
+              echo " "
+              echo "Exiting..."
+              echo " "
+              exit 0
+              break
+              
+          else
+              echo "Wrong input"
+          fi
+      done
+      echo " "
+  fi     
+  productbuild --component "$appDir" "/Applications" "$appName.pkg"
+  mv "$appName.pkg" "../7_Distribution/Appstore/Development/$FolderVersionName"
+  echo "Final build in ../7_Distribution/Appstore/Development"   
+
+elif [ "$BUILD_FOR" = "outside" ]; then
+  printf '\e[1m'
+  echo "Zip files? Or create installer? (inst/zip)"
+  while read -r MAKE_ZIP
+  do
+      if [ "$MAKE_ZIP" = "zip" ]; then
+          echo " "         
+          printf '\e[0m'
+          mkdir "../7_Distribution/Outside Appstore/Zip/$FolderVersionName"
+          echo "Deleting embedded.provisionprofile @ $appDir/Contents/ for Zipped file"
+          find "$appDir/Contents" -name '*.provisionprofile' -delete
+          echo " "         
+          echo "Zipping..."
+          cd $appDir
+          cd ..
+          OverwriteZip=`find "../7_Distribution/Outside Appstore/Zip/$FolderVersionName" -name "$appName.zip" -maxdepth 1`
+
+          if ! [ -z "$OverwriteZip" ]; then
+              printf '\e[1m'
+              echo " "
+              echo "Zip for this build ($FolderVersionName) found in directory! Overwrite? (y/n)"
+              echo "Make sure you always update your build number / version number when uploading new packages to the AppStore..."
+              printf '\e[0m'
+              while read -r OVERWRITE_ZIP
+              do
+                  if [ "$OVERWRITE_ZIP" = "y" ]; then
+                      echo " "
+                      echo "Replacing zipped build "
+                      rm "../7_Distribution/Outside Appstore/Zip/$FolderVersionName/$appName.zip"
+                      break
+
+                  elif [ "$OVERWRITE_ZIP" = "n" ]; then
+                      echo " "
+                      echo "Exiting..."
+                      echo " "
+                      exit 0
+                      break
+                      
+                  else
+                      echo "Wrong input"
+                  fi
+              done
+              echo " "
+          fi          
+          zip -r "../7_Distribution/Outside Appstore/Zip/$FolderVersionName/$appName.zip" "$appfile"
+          echo "Zip ready to go in  in ../7_Distribution/Outside Appstore/Zip"         
+          break
+
+      elif [ "$MAKE_ZIP" = "inst" ]; then
+          echo " "       
+          printf '\e[0m'
+          mkdir "../7_Distribution/Outside Appstore/Installer/$FolderVersionName"
+          echo "Building installer pkg : $appName.pkg"
+          
+          OverwriteDevID=`find "../7_Distribution/Outside Appstore/Installer/$FolderVersionName" -name "$appName.pkg" -maxdepth 1`
+
+          if ! [ -z "$OverwriteDevID" ]; then
+              printf '\e[1m'
+              echo " "
+              echo "Package for this build ($FolderVersionName) found in directory! Overwrite? (y/n)"
+              echo "Make sure you always update your build number / version number when uploading new packages to the AppStore..."
+              printf '\e[0m'
+              while read -r OVERWRITE_DevID
+              do
+                  if [ "$OVERWRITE_DevID" = "y" ]; then
+                      echo " "
+                      echo "Replacing build "
+                      rm "../7_Distribution/Outside Appstore/Installer/$FolderVersionName/$appName.pkg"
+                      break
+
+                  elif [ "$OVERWRITE_DevID" = "n" ]; then
+                      echo " "
+                      echo "Exiting..."
+                      echo " "
+                      exit 0
+                      break
+                      
+                  else
+                      echo "Wrong input"
+                  fi
+              done
+              echo " "
+          fi             
+
+          productbuild --component "$appDir" "/Applications" --sign "Developer ID Installer: $DEVNAME" "$appName.pkg"
+          mv "$appName.pkg" "../7_Distribution/Outside Appstore/Installer/$FolderVersionName"
+          echo "Final build in ../7_Distribution/Outside Appstore/Installer"
+          break
+        
+      else
+          echo "Wrong input"
+      fi
+  done  
+else
+  mkdir "../7_Distribution/Appstore/Distribution/$FolderVersionName"
+  echo "Building distribution pkg : $appName.pkg"
+  OverwriteAppstore=`find "../7_Distribution/Appstore/Distribution/$FolderVersionName" -name "$appName.pkg" -maxdepth 1`
+
+  if ! [ -z "$OverwriteAppstore" ]; then
+      printf '\e[1m'
+      echo " "
+      echo "Package for this build ($FolderVersionName) found in directory! Overwrite? (y/n)"
+      echo "Make sure you always update your build number / version number when uploading new packages to the AppStore..."
+      printf '\e[0m'
+      while read -r OVERWRITE_Appstore
+      do
+          if [ "$OVERWRITE_Appstore" = "y" ]; then
+              echo " "
+              echo "Replacing build "
+              rm "../7_Distribution/Appstore/Distribution/$FolderVersionName/$appName.pkg"
+              break
+
+          elif [ "$OVERWRITE_Appstore" = "n" ]; then
+              echo " "
+              echo "Exiting..."
+              echo " "
+              exit 0
+              break
+              
+          else
+              echo "Wrong input"
+          fi
+      done
+      echo " "
+  fi      
+  productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer: $DEVNAME" "$appName.pkg"
+  mv "$appName.pkg" "../7_Distribution/Appstore/Distribution/$FolderVersionName"
+  echo "Final build in ../7_Distribution/Appstore/Distribution"
+fi
+
+echo " "
+
+exit 0

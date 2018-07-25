@@ -1,0 +1,34 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+appDir=`find "../1_MyBuild" -name "*.app" -print`
+
+checkFirstRun=`find "$PWD" -name "Info.plist" -print -maxdepth 1`
+
+echo " "
+echo "+-------------------------------------------------------------------+"
+echo "|         Import Info.plist template from your Unity build          |"
+echo "+-------------------------------------------------------------------+"
+echo " "
+printf '\e[1m'
+
+if ! [ -z "$checkFirstRun" ]; then
+	mkdir Backup
+	echo "Making a copy in Backup/Info.plist just to be sure!"
+	cp "Info.plist" "Backup/Info.plist"
+fi
+
+printf '\e[0m' 
+echo " "
+echo "Importing Info.plist from $appDir/Contents/Info.plist"
+cp "$appDir/Contents/Info.plist" "Info.plist"
+echo " "
+printf '\e[1m' 
+echo "DONE! Now manually update Info.plist with correct values and run CopyPlist"
+printf '\e[0m' 
+echo " "
+echo " "
+
+exit 0
