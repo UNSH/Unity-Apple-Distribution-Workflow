@@ -4,6 +4,8 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 
 **CAUTION** building for outside the Appstore may still need some work.
 
+[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/)
+
 ## Instructions
 ### You're new at this?
 For a first build just follow all the steps. In each folder you will find instructions to deal with the problem at hand in chronology. After you finished the steps a first time you can just run "RepeatForUpdatedBuild" to quickly repeat the whole process. But you **need** to finish the steps so all the data used is correct otherwise problems will arise. 
