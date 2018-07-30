@@ -10,6 +10,11 @@ When you launch the game, you should see a dialog pop up that tells you that the
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
 
+### IF INSTALLER PKG
+[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter:
+
+If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
+
 ## APPSTORE DISTRIBUTION
 ### Go to Itunes connect and open your app again
 Fill in the details for your App such as description, keywords,... Make sure here you **DO NOT reference other platforms**. 

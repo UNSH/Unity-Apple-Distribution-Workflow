@@ -55,8 +55,10 @@ These will be copied later into your app as embedded.provisionprofile ( dependan
 **QUOTE** "Zwilnik @ [Strange flavour](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/)"
 Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.
 
-### Download Xcode from the App Store if you haven't already.
-You will need it to open your .plist files later. Or alternatively to use for the icons.
+### Download & Install Xcode from the App Store if you haven't already.
+[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
+
+You will also need it to open your .plist files later. Or alternatively to create your icon without the scrips.
 
 ## INSTRUCTIONS UNITY
 

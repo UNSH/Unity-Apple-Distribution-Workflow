@@ -149,8 +149,10 @@ These will be copied later into your app as embedded.provisionprofile ( dependan
 **QUOTE** "Zwilnik @ [Strange flavour](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/)"
 Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.
 
-### Download Xcode from the App Store if you haven't already.
-You will need it to open your .plist files later. Or alternatively to use for the icons.
+### Download & Install Xcode from the App Store if you haven't already.
+[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
+
+You will also need it to open your .plist files later. Or alternatively to create your icon without the scrips.
 
 ## INSTRUCTIONS UNITY
 
@@ -460,6 +462,11 @@ When you launch the game, you should see a dialog pop up that tells you that the
 ## APPSTORE DEVELOPER ID - INDEPENDANT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
+
+### IF INSTALLER PKG
+[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter:
+
+If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
 
 ## APPSTORE DISTRIBUTION
 ### Go to Itunes connect and open your app again
