@@ -83,11 +83,13 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 ### WORKFLOW
 Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
 
-| WHAT | WHO |
-|:--|:--|
-| ORGINAL WORKFLOW | [UNSH.IO](https://unsh.io) |
-| ... | Add yourself |
-| ... | Add yourself |
+| WHAT | WHO | HOME |
+|:--|:--|:--|
+| ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
+|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
+| post | Your name | page | 
+
+
 
  
 
@@ -105,6 +107,9 @@ If you do not already have one go to [Apple Developer portal](https://developer.
 Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game your need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names](https://stackoverflow.com/a/13603031)
 
 **IMPORTANT** In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
+
+
+**IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have signed your app with old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
 
 #### Selling on the APPSTORE
 1. Mac Installer Distribution
@@ -454,12 +459,16 @@ When creating any installer make a duplicate of the correct provisioning profile
 # DISTRIBUTION
 
 ## APPSTORE DEVELOPMENT / TEST BUILD 
+
+#### IMPORTANT
+When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID 
 
 [Create testusers here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
-## APPSTORE DEVELOPER ID - INDEPENDANT DISTRIBUTION 
+## APPSTORE DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
 
