@@ -83,11 +83,13 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 ### WORKFLOW
 Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
 
-| WHAT | WHO |
-|:--|:--|
-| ORGINAL WORKFLOW | [UNSH.IO](https://unsh.io) |
-| ... | Add yourself |
-| ... | Add yourself |
+| WHAT | WHO | HOME |
+|:--|:--|:--|
+| ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
+|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
+| post | Your name | page | 
+
+
 
  
 

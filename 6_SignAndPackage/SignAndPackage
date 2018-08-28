@@ -29,7 +29,7 @@ locationEntitlements=`find "../5_Entitlements" -name "entitlements.plist" -maxde
 
 if [ -z "$locationEntitlements" ]; then
     printf '\e[1m'
-    echo "ERROR! No entitlements.plist found!"
+    echo "ERROR! No entitlements.plist found! Note that entitlements.plist is case sensitive so the your entitlements file needs exactly that name"
     echo "Place entitlements.plist in '5_Entitlements/' folder"   
     echo " "
     printf '\e[0m'    
@@ -225,7 +225,7 @@ if [ "$BUILD_FOR" = "dev" ]; then
       do
           if [ "$OVERWRITE_DevBuild" = "y" ]; then
               echo " "
-              echo "Replacing zipped build "
+              echo "Replacing build "
               rm "../7_Distribution/Appstore/Development/$FolderVersionName/$appName.pkg"
               break
 
@@ -242,9 +242,10 @@ if [ "$BUILD_FOR" = "dev" ]; then
       done
       echo " "
   fi     
-  productbuild --component "$appDir" "/Applications" "$appName.pkg"
+  productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer: $DEVNAME" "$appName.pkg"
   mv "$appName.pkg" "../7_Distribution/Appstore/Development/$FolderVersionName"
   echo "Final build in ../7_Distribution/Appstore/Development"   
+  echo "IMPORTANT : INSTALLER WILL INSTALL @ /1_MyBuild either test there or Remove this build before installing"  
 
 elif [ "$BUILD_FOR" = "outside" ]; then
   printf '\e[1m'
@@ -374,6 +375,7 @@ else
   productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer: $DEVNAME" "$appName.pkg"
   mv "$appName.pkg" "../7_Distribution/Appstore/Distribution/$FolderVersionName"
   echo "Final build in ../7_Distribution/Appstore/Distribution"
+  echo "IMPORTANT : INSTALLER WILL INSTALL @ /1_MyBuild either test there or Remove this build before installing" 
 fi
 
 echo " "

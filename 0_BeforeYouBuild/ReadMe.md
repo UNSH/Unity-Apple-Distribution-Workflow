@@ -12,6 +12,9 @@ Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certi
 
 **IMPORTANT** In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
 
+
+**IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have signed your app with old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
+
 #### Selling on the APPSTORE
 1. Mac Installer Distribution
 2. Mac App Distribution
