@@ -91,6 +91,19 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 
 
 
+
+# Updates
+#### 1.4
+- Updated Readme
+#### 1.3
+- Fix wrong command for product build
+#### 1.2 & 1.3
+- Fumblefuck with my phone
+#### 1.1 
+- Fix folder structure in 7_Distribution
+- Fix entitlements file Naming error
+
+
  
 
 
@@ -358,7 +371,7 @@ Create your entitlements file and place it in the same folder as your build. You
 ## SIGN & PACKAGE
 ### Get your team name & team id 
 ###### OPTION 1
-From your keychain. Looks like this “TEAM NAME (XXXXXXXXXX)” Copy it exactly as it is, so no spaces before or after. [Example where to find](https://apple.stackexchange.com/a/312503) 
+From your keychain. Looks like this “TEAM NAME (XXXXXXXXXX)” Where the XXXXXXXXXX is your team id. Copy it exactly as it is, so no spaces before or after. [Example where to find](https://apple.stackexchange.com/a/312503) 
 
 ###### OPTION 2 
 Like in the previous chapter go to [Membership](https://developer.apple.com/account/#/membership/) and copy your team name and team ID there and put it in this format: “TEAM NAME (XXXXXXXXXX)”
@@ -424,6 +437,13 @@ At *"/7_Distribution/DISTRIBUTION_CHOICE/VERSION."*
 ### Provisioning profile
 When creating any installer make a duplicate of the correct provisioning profile, rename it to embedded.provisioningprofile and place it in YOUR_BUILD/Contents. [Read more at Strangeflavour](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 
+### What to sign?
+In this order
+
+- You sign both **libmono.0.dylib** & **libMonoPosixHelper.dylib** 
+- You sign all your **plugins**
+- You sign **your game** with the "--deep" option
+
 ### CODESIGN TERMNIAL
 
 ###### Appstore
@@ -451,17 +471,23 @@ When creating any installer make a duplicate of the correct provisioning profile
 	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 ###### Test / developer build
-	productbuild --component "$appDir" "/Applications" "$appName.pkg"
+	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 ###### Outside Appstore
 	productbuild --component “$appDir” “/Applications” --sign "Developer ID Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 # DISTRIBUTION
 
+## GENERAL
+#### Installing pkg
+When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+
+#### Problems?
+Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
+
 ## APPSTORE DEVELOPMENT / TEST BUILD 
 
-#### IMPORTANT
-When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+
 
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID 

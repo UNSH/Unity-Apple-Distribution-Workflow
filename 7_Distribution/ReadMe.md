@@ -1,9 +1,15 @@
 # DISTRIBUTION
 
+## GENERAL
+#### Installing pkg
+When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+
+#### Problems?
+Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
+
 ## APPSTORE DEVELOPMENT / TEST BUILD 
 
-#### IMPORTANT
-When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+
 
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID 

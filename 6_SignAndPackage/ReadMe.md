@@ -2,7 +2,7 @@
 ## SIGN & PACKAGE
 ### Get your team name & team id 
 ###### OPTION 1
-From your keychain. Looks like this “TEAM NAME (XXXXXXXXXX)” Copy it exactly as it is, so no spaces before or after. [Example where to find](https://apple.stackexchange.com/a/312503) 
+From your keychain. Looks like this “TEAM NAME (XXXXXXXXXX)” Where the XXXXXXXXXX is your team id. Copy it exactly as it is, so no spaces before or after. [Example where to find](https://apple.stackexchange.com/a/312503) 
 
 ###### OPTION 2 
 Like in the previous chapter go to [Membership](https://developer.apple.com/account/#/membership/) and copy your team name and team ID there and put it in this format: “TEAM NAME (XXXXXXXXXX)”
@@ -68,6 +68,13 @@ At *"/7_Distribution/DISTRIBUTION_CHOICE/VERSION."*
 ### Provisioning profile
 When creating any installer make a duplicate of the correct provisioning profile, rename it to embedded.provisioningprofile and place it in YOUR_BUILD/Contents. [Read more at Strangeflavour](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 
+### What to sign?
+In this order
+
+- You sign both **libmono.0.dylib** & **libMonoPosixHelper.dylib** 
+- You sign all your **plugins**
+- You sign **your game** with the "--deep" option
+
 ### CODESIGN TERMNIAL
 
 ###### Appstore
@@ -95,7 +102,7 @@ When creating any installer make a duplicate of the correct provisioning profile
 	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 ###### Test / developer build
-	productbuild --component "$appDir" "/Applications" "$appName.pkg"
+	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 ###### Outside Appstore
 	productbuild --component “$appDir” “/Applications” --sign "Developer ID Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
