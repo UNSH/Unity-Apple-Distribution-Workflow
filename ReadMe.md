@@ -91,6 +91,19 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 
 
 
+
+# Updates
+1.4
+- Updated Readme
+1.3
+- Fix wrong command for product build
+1.2 & 1.3
+- Fumblefuck with my phone
+1.1 
+- Fix folder structure in 7_Distribution
+- Fix entitlements file Naming error
+
+
  
 
 
