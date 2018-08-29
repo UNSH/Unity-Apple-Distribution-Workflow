@@ -5,10 +5,10 @@ Just place this workflow somewhere outside of your Unity project.
 ### Create Apple Developer Account 
 If you do not already have one go to [Apple Developer portal](https://developer.apple.com/) and pay 100$ to get confused by professionals. And you might as well enable **AUTO RENEW** in the membership tab at [Apple Developer portal](https://developer.apple.com/). So you avoid surprises. 
 
-**SELLING ON APPSTORE?** If you are not releasing a free app/game and want to get paid outside of the US? Go fix the banking and tax first at [Appstore Connect](https://appstoreconnect.apple.com) >> Agreements, Tax and banking. It's not necessarily something that has to happen now, but get it over with if you are about to release. Prepare for some serious legal and tax lingo.
+**SELLING ON APPSTORE?** If you are not releasing a free app/game and want to get paid outside of the US. Go fix the banking and tax first at [Appstore Connect](https://appstoreconnect.apple.com) >> Agreements, Tax and banking. It's not necessarily something that has to happen now, but get it over with if you are about to release. Prepare for some serious legal and tax lingo.
 
 ### Create the Certificates you need
-Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game your need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names](https://stackoverflow.com/a/13603031)
+Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names](https://stackoverflow.com/a/13603031)
 
 **IMPORTANT** In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
 
