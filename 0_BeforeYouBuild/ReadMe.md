@@ -65,6 +65,8 @@ You will also need it to open your .plist files later. Or alternatively to creat
 
 ## INSTRUCTIONS UNITY
 
+**IMPORTANT** There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490) 
+
 ### Add OsxResolutionFix.cs to your build
 Add to any GO that will live @ startup to fix retina on large screens.
 
