@@ -6,6 +6,10 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 
 [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/)
 
+## CAUTION - BUGS & GENERAL PROBLEMS !!!
+
+##### There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently 2018.2). Link to workaround by giorgos_gs
+
 ## Instructions
 ### You're new at this?
 For a first build just follow all the steps. In each folder you will find instructions to deal with the problem at hand in chronology. After you finished the steps a first time you can just run "RepeatForUpdatedBuild" to quickly repeat the whole process. But you **need** to finish the steps so all the data used is correct otherwise problems will arise. 
