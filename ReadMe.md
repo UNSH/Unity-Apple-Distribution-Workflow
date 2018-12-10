@@ -69,7 +69,7 @@ Self explanatory.
 ### RepeatForUpdatedBuild
 Script that calls all the other scripts to speed up preparing updates and creating new builds. 
 
-## PM me to contribute
+## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
 
 ## Credit
