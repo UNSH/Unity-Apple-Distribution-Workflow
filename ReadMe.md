@@ -19,7 +19,7 @@ void OnApplicationQuit() {
 }
 ```
 
-We decided to leave IAP behind though and disable Purchasing altogether. If you are developing for more Platforms and like us want to use Purchasing in them, just wrap the code for initialising (in the purchasing script) in [platform dependant directives](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html).
+We decided to leave IAP behind though and disable Purchasing altogether. If you are developing for more Platforms and like us want to use Purchasing in them, just wrap the code for initialising (in unitypurchasing) in [platform dependant directives](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html).
 
 ## Instructions
 ### You're new at this?
