@@ -11,9 +11,14 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 #### Bug Unity 2018 Results in Apple rejection (FIXED)  
 There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
-#### Bug Unity Purchasing
-There is a bug with OSX/MacOS and Unitypurchasing. When quitting your build either takes up to 10 seconds to close or outright crashes. This is currently the only fix I have found taken from this [Issue](https://issuetracker.unity3d.com/issues/osx-enabling-unitypurchasing-on-mac-standalone-causes-builds-to-hang-when-quitting-them) Though we decided to leave IAP behind and disable Purchasing altogether. 
-if (!Application.isEditor) { System.Diagnostics.Process.GetCurrentProcess().Kill(); }  } 
+#### Bug Unity Purchasing and closing a build
+There is a bug with OSX/MacOS and Unitypurchasing. When quitting your build either takes up to 10 seconds to close or outright crashes. We are not 100% sure if it has something to do with our setup or not, so just see if your build closes properly, if it does ignore this. Below is currently the only fix I have found taken from this [Issue](https://issuetracker.unity3d.com/issues/osx-enabling-unitypurchasing-on-mac-standalone-causes-builds-to-hang-when-quitting-them).  
+
+void OnApplicationQuit() {
+  if (!Application.isEditor) { System.Diagnostics.Process.GetCurrentProcess().Kill(); } 
+}
+
+We decided to leave IAP behind though and disable Purchasing altogether. If you are developing for more Platforms and like us want to use Purchasing in them, just wrap the code for initialising (in the purchasing script) in [platform dependant directives](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html).
 
 ## Instructions
 ### You're new at this?
