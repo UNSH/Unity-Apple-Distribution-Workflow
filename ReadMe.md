@@ -103,22 +103,6 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
 |[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
 | post | Your name | page | 
-
-
-
-
-# Updates
-#### 1.4
-- Updated Readme
-#### 1.3
-- Fix wrong command for product build
-#### 1.2 & 1.3
-- Fumblefuck with my phone
-#### 1.1 
-- Fix folder structure in 7_Distribution
-- Fix entitlements file Naming error
-
-
  
 
 
