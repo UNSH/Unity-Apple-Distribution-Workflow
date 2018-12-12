@@ -8,7 +8,7 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 
 ## GENERAL PROBLEMS
 
-#### Bug Unity 2018 Results in Apple rejection (FIXED)  
+#### Bug Unity 2018 Results in Apple rejection  
 There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
 #### Bug Unity Purchasing and closing a build
