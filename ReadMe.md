@@ -4,7 +4,7 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 
 **CAUTION** building for outside the Appstore may still need some work.
 
-[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/)
+[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) [ISSUE Link](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)
 
 ## GENERAL PROBLEMS
 
