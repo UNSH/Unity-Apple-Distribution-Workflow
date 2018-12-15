@@ -11,6 +11,17 @@ Workflow to automate and guide people in delivering Unity builds inside or outsi
 #### Bug Unity 2018 Results in Apple rejection  
 There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
+Fix from Giogio (Edited)
+1. Open the binary in Contents/MacOS
+2. Expand the "Load Commands" section
+3. Look for LC_LOAD_DYLIB (GameKit)
+	- Notice the command size is 88, we need to find a same length framework to replace it, we'll use Webkit
+	- Change Command Data to 0000000C (with our build data already had this value)
+	- Change Current Version to 025C0407 (check the value at Webkit) 
+	- Change Name to 2F53797374656D2F4C6962726172792F4672616D65776F726B732F5765624B69742E6672616D65776F726B2F56657273696F6E732F412F5765624B697400
+4. File -> Save
+5. Proceed to signing
+
 #### Bug Unity Purchasing and closing a build
 There is a bug with OSX/MacOS and Unitypurchasing. When quitting your build either takes up to 10 seconds to close or outright crashes. We are not 100% sure if it has something to do with our setup or not, so just see if your build closes properly, if it does ignore this. Below is currently the only fix I have found taken from this [Issue](https://issuetracker.unity3d.com/issues/osx-enabling-unitypurchasing-on-mac-standalone-causes-builds-to-hang-when-quitting-them). Place this on an object that will live throughout your game/app. 
 ```
