@@ -17,8 +17,8 @@ Fix from Giogio (Edited)
 3. Look for LC_LOAD_DYLIB (GameKit)
 	- Notice the command size is 88, we need to find a same length framework to replace it, we'll use Webkit
 	- Change Command Data to 0000000C (with our build data already had this value)
-	- Change Current Version to 025C0407 (check the value at Webkit) 
-	- Change Name to 2F53797374656D2F4C6962726172792F4672616D65776F726B732F5765624B69742E6672616D65776F726B2F56657273696F6E732F412F5765624B697400
+	- Change Current Version to **025C0407** (check the value at Webkit) 
+	- Change Name to **2F53797374656D2F4C6962726172792F4672616D65776F726B732F5765624B69742E6672616D65776F726B2F56657273696F6E732F412F5765624B697400**
 4. File -> Save
 5. Proceed to signing
 
