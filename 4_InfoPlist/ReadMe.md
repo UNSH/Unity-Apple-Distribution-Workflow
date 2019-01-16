@@ -9,6 +9,9 @@ Don't open in an editor, just double click and open with Xcode so you have acces
 
 In the examples folder you can find an empty example (that we used) for reference.
 
+### IMPORTANT Version
+Don't use 0 in your decimals when you define your version. Always increase your versions above zero e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. 
+
 ### Now check these values
 
 | KEY | VALUE |
