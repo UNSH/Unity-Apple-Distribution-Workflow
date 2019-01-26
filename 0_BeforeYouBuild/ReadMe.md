@@ -95,5 +95,8 @@ You can enter all of the other OSX values later in your Info.plist which is more
 - Double check if all your buttons work.
 - [Read this](https://developer.apple.com/app-store/review/rejections/)
 
+### Using Unity IAP and Non-Consumable unlock? 
+Make sure you do not immediately close the Menu containing the IAP button with onPurchaseComplete. If you do use Invoke to delay the closing for 0.1 seconds otherwise you will have problems. It will seem to work on some devices but with others your purchase will not come through.
+
 ### Build your game and place your build in “/1_MyBuild”
 So that's *"1_MyBuild/MYGAME"*
