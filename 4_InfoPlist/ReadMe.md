@@ -12,6 +12,9 @@ In the examples folder you can find an empty example (that we used) for referenc
 ### IMPORTANT Version
 Don't use 0 in your decimals when you define your version. Always increase your versions above zero e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. 
 
+### IMPORTANT Bug Unity 2018 & Mavericks (OSX 10.9)
+We got complaints from users that our build crashes upon startup apparently this is caused by a bug between Unity 2018 and Mavericks so if you are using 2018 best to set the Minimum system version to 10.10.0 in your info.plist. [macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+
 ### Now check these values
 
 | KEY | VALUE |
@@ -26,6 +29,9 @@ Don't use 0 in your decimals when you define your version. Always increase your 
 |BundleVersion| **Build number**. Used to upload packages to the Appstore that you do not want to show in your public version. Can be the same as ShortVersionString, but if you want to change your screenshots at the Appstore you will need to send them a new package, with build you could hide this new version without increasing your version number.|
 |App Uses Non-Exempt Encryption| **TRUE/FALSE** - A.K.A "App is using encryption that is exempt from [EAR](https://www.bis.doc.gov/index.php/encryption-and-export-administration-regulations-ear)" **Before you scare read** [Short answer](https://stackoverflow.com/a/46691541), [this for Unity](http://answers.unity.com/answers/669794/view.html), and [this by Unity](https://forum.unity.com/threads/us-export-compliance-encryption.389208/#post-2893835) |
 |CFBundleSupportedPlatforms|**MacOSX** Without this the application loader seems to default to iOS. [Read More by N3uRo](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/)|
+
+|LSMinimumSystemVersion| Set to 10.10.0 if you are on Unity 2018 [Version history](https://en.wikipedia.org/wiki/MacOS_version_history)|
+
 
 ### Run “CopyPlist” 
 Will replace the Info.plist in your build with the one you just made.
