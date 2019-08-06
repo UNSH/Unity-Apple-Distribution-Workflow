@@ -94,6 +94,7 @@ In this order
 |--verify | See if things got signed |
 |--entitlements | Location of your entitlements |
 |--sign | The type of signing with your team name|
+|--preserve-metadata=identifier,entitlements,flags | To sign bundles that are not yours such as libmono.0.dylib |
 
 ### BUILD PACKAGE TERMINAL 
 

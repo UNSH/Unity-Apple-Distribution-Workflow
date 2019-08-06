@@ -9,12 +9,18 @@ Open your game and check the logs (**Applications > Utilities > Console**) for e
 
 ## APPSTORE DEVELOPMENT / TEST BUILD 
 
+### iCloud
+[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
+*Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled, or CloudKit will not work.
 
-
+### Sandbox Login
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
-When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID 
+When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
-[Create testusers here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
+### Location Log files 
+	  ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log
+[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
+Note that the game will run in sandbox mode.  This means all of its files will be written to ~/Library/Containers/<your app ID>/Data/Library/.  Where the Unity documentation says the log file writes to ~/Library/Logs/Unity/Player.log, the sandboxed version is in ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log.  Also of note, even though the game is sandboxed, it will use the iCloud credentials that the current machine is using.
 
 ## APPSTORE DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains

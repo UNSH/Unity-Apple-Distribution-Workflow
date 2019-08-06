@@ -24,15 +24,24 @@ Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certi
 1. Developer ID Application
 2. ~~Developer ID Installer~~?
 
-### Create an identifier 
+### Create an App Identifier 
 [Apple Developer Portal Go to App Identifiers](https://developer.apple.com/account/mac/identifier/bundle/). Examples : COM.COMPANY.PRODUCT, UNITY.COMPANY.PRODUCT, ... It's up to you. Note that you cannot disable In App Purchase. IAP is always enabled, but if you don't implement any button or script in Unity you can just ignore this. [More info on bundle identifiers here](https://cocoacasts.com/what-are-app-ids-and-bundle-identifiers/)
 
-### Create a new app in iTunes Connect
-Go to [iTunes connect](https://appstoreconnect.apple.com) and create a new OSX app.
+#### Capabilities 
+Enable any services such as (iCloud, Game Center, ...) you are going to use and configure them if necessary. It's important you do this before you download your Provisioning Profile so that this information can be included in these profiles.
 
-**[QUOTE Victor Leung](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)** Login to iTunes Connect, choose My Apps > “+” > “New Mac App”, fill in the values and choose the bundle ID matches with the previous step. The prefix field would be the game name, such us ufo in my case. 
+**iCloud** To create a single app that shares data through iCloud you always need to create separate App Identifiers for iOS/tvOS and macOS. And seeing that Unity builds with iOS can use Xcode it's easier to configure them on iOS.
+
+[QUOTE Joel @kittehface](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) *With iOS/tvOS being the flagship platforms, it probably makes more sense to create your primary App ID for them and have a secondary one for macOS.  But the secondary one will need to have a different name. Both App IDs will need to have the iCloud/CloudKit capability set.  Again, you can do all the primary work on the iOS/tvOS App ID.  If you're also doing your Unity game on those platforms, make a build there, have it generate the Xcode project, and use Xcode to turn on the iCloud capability and set up CloudKit.  It'll handle creating your default container (which will be named for the iOS/tvOS App ID).*
+
+
+### Create a new app in iTunes Connect
+Go to [iTunes connect](https://appstoreconnect.apple.com) and create a new (macOS) app.
+
+**[QUOTE Victor Leung](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)** *Login to iTunes Connect, choose My Apps > “+” > “New Mac App”, fill in the values and choose the bundle ID matches with the previous step. The prefix field would be the game name, such us ufo in my case.* 
 
 ### Create your provisioning profiles
+
 The type of provisioning profile depends on your selling platform (in -or Outside Appstore). To test Appstore features like Game Center you will need to create a separate provisioning profile for Appstore development as the distribution build will not allow testing.
 
 | FOR | NAME PROVISIONING PROFILE |
@@ -43,8 +52,14 @@ The type of provisioning profile depends on your selling platform (in -or Outsid
 
 Go to the [Apple developer portal](https://developer.apple.com/account/mac/profile/). Just follow the instructions, if you have more problems follow [this tutorial](https://help.apple.com/developer-account/#/devf2eb157f8). Also **give a clear name to your profiles** when you download them so you do not make mistakes later. 
 
-###### The first time 
-you will be asked to add a device and give the UUID of this device you can find this here: About this Mac > System Report > Hardware overview (Hardware UUID: XXXXXXXXX)
+#### REGISTER YOU MAC DEVICES 
+If this is the first time you will be asked to add a device and give the UUID of this device you can find this here: About this Mac > System Report > Hardware overview (Hardware UUID: XXXXXXXXX) Also you will need to include all test devices in a development profile so if you need to add more devices do this now.
+
+**IMPORTANT** Make sure you have set up all services such as iCloud before downloading your profiles.
+
+"[QUOTE Joel @ kittehface](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)"
+*Since we're doing a development build, create your provisioning profile with your development certificate, then make sure to set your Mac as one of the allowed devices before generating and downloading it.  Also make sure you've taken care of all the CloudKit setup before you generate the provisioning profile.*
+
 
 ### Place Provisioning Profiles in their respective folders
 These will be copied later into your app as embedded.provisionprofile ( dependant on the build you chose).
@@ -56,7 +71,7 @@ These will be copied later into your app as embedded.provisionprofile ( dependan
 |Outside Appstore| 0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/MY.provisionprofile |
 
 **QUOTE** "Zwilnik @ [Strange flavour](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/)"
-Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.
+*Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.*
 
 ### Download & Install Xcode from the App Store if you haven't already.
 [Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)

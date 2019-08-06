@@ -100,7 +100,8 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 
 | WHO | WHAT | HOME |
 |:--|:--|:--|
-| N3uRo | [UNITY THREAD](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/) | [Unity Assetstore Page](https://assetstore.unity.com/publishers/18584) |
+| Joel | [GUIDE ICLOUD DEV](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) | [Kittehface.com](http://www.kittehface.com) |
+ N3uRo | [UNITY THREAD](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/) | [Unity Assetstore Page](https://assetstore.unity.com/publishers/18584) |
 | Zwilnik | [GUIDE](http://www.strangeflavour.com/creating-mac-app-store-games-unity/) | [Strangeflavour.com](http://www.strangeflavour.com) |
 | Victor Leung | [MEDIUM GUIDE](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412) | .. |
 | Matthias | [GUIDE](https://gentlymad.org/blog/post/deliver-mac-store-unity) | [Gentlymad.org](https://gentlymad.org) |

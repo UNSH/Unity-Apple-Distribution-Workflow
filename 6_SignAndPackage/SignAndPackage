@@ -169,13 +169,17 @@ echo " "
 
 
 if [ "$BUILD_FOR" = "dev" ] ; then 
-  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylib"
-  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylibHelper"
+
+  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" --preserve-metadata=identifier,entitlements,flags "$appDirDylib"
+
+  codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME"  --preserve-metadata=identifier,entitlements,flags "$appDirDylibHelper"
+
   for file in "$appDir/Contents/Plugins/"*.bundle
   do
-      codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$file"
+      codesign --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME"  --preserve-metadata=identifier,entitlements,flags "$file"
   done
-  codesign --deep --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDir"
+
+  codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "3rd Party Mac Developer Application: $DEVNAME" "$appDir"
   
 elif [ "$BUILD_FOR" = "appstore" ] ; then
   codesign --entitlements "$locationEntitlements" --force --verbose=4 --display -s "3rd Party Mac Developer Application: $DEVNAME" "$appDirDylib"
@@ -196,16 +200,16 @@ elif [ "$BUILD_FOR" = "outside" ] ; then
   codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display -s "Developer ID Application: $DEVNAME" "$appDir"  
 fi
 
-echo " "
-echo " "
-echo " Veryfing codesign "
-echo "-------------------------------------------------------------------"
-echo " "
-codesign --deep --verify --verbose "$appDir"
-echo " "
-codesign -dv --verbose=4 "$appDir"
-echo " "
-echo " "
+# echo " "
+# echo " "
+# echo " Veryfing codesign "
+# echo "-------------------------------------------------------------------"
+# echo " "
+# codesign --verify --verbose "$appDir"
+# echo " "
+# codesign -dv --verbose=4 "$appDir"
+# echo " "
+# echo " "
 echo " Building Package ...  "
 echo "-------------------------------------------------------------------"
 echo " "
