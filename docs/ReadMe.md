@@ -435,6 +435,18 @@ Like in the previous chapter go to [Membership](https://developer.apple.com/acco
 2. JOHN CRIED (DGHHJF45F4)
 3. JOHN CRIED INC (DGHHJF45F4)
 
+### IF development build with iCloud
+
+[QUOTE Joel @Kitteh Face :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
+
+Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
+	 
+1. You need to use the third party tool [optool](https://github.com/alexzielenski/optool).
+2. Run the command **optool install -c load -p "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit" -t "<your game name>.app/Contents/MacOS/<your game name>"**
+3. This will modify the Unity binary to load the CloudKit framework at startup.  
+	
+We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
+
 ### Run “SignAndPackage”
 1. When prompted type your team name
 2. When prompted enter : dev, appstore or outside
