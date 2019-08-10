@@ -26,7 +26,7 @@ Either use this icon as a base or:
 5. Create a UnityPlayerIcon.png in correct size (64x64)
 6. Copy both “UnityPlayerIcon.png” and “PlayerIcon.icns” to *“1_MyBuild/YOUR.APP/Contents/Resources”* and replace what unity made.
 
-###### Problem 
+#### Problem 
 On High Sierra there is no way to create an icns file that includes all 10 required sizes through icon util (Everything but 16X16@1x and 32x32@1x). The only way to do this is to run this script on an older OS. I believe I did it with Sierra. You can open .ICNS files with preview to double check. I am not sure if this is a problem though. I have read not all are necessary. But if you are obsessive on details like me there is no other way. Believe me I have tried it all. Nothing worked besides running the IconUtil on an older OS.
 
 ## WHY

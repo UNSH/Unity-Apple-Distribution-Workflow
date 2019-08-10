@@ -4,9 +4,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
 appDir=`find "../1_MyBuild" -name "*.app" -print`
-find "$appDir/Contents/Plugins" -name '*.meta' -print -delete
 
 chmod -R a+xr "$appDir"
+find "$appDir/Contents/Plugins" -name '*.meta' -print -delete
 
 echo "+------------------------------------------------------------------+"
 echo "|           Delete all meta files in app/plugins folder.           |"
@@ -16,3 +16,93 @@ echo "DONE! All meta files deleted @ $appDir/Contents/Plugins "
 echo " "
 
 exit 0 
+
+
+# PreformCodeSign () {
+#   codesign --deep --force --display --preserve-metadata=identifier,entitlements --sign "$signature" ,flags $1
+# }
+# --timestamp --options=runtime
+
+# for file in $(find "$appDir/Contents" -type f  -not -path "*bundle*" ! -name "*.dylib") ; 
+# do
+# 	if ! [[ "$file" = "default" ]] || [[ "$file" = "resources" ]]; then
+#     	echo "MANUAL SIGN -> $file"	 
+# 	fi
+# done
+
+# for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
+# do
+#     echo "MANUAL SIGN -> $bundle"	 
+# done
+
+# for dir in "$appDir/Contents/"*/ ; 
+# do
+#     if [ "$dir" = "$appDir/Contents/Frameworks/" ]; then
+
+#     	echo " "
+#     	echo "FRAMEWORKS"
+#     	echo "SIGN DEEP PRESERVE $dir"
+
+#     elif [ "$dir" = "$appDir/Contents/Plugins/" ]; then
+
+#     	echo " "
+#     	echo "PLUGINS"
+#     	echo "Traverse $dir"
+# 		for file in $(find "$appDir/Contents/Plugins" -not -path "$appDir/Contents/Plugins" ) ; 
+# 		do
+# 			if [[ $file == *"bundle"* ]]; then
+# 		    	echo "MANUAL SIGN PRESERVE -> $file"
+# 			else
+# 		    	echo "MANUAL SIGN -> $file"	 
+# 			fi
+# 		done
+#     	echo " "
+#     	echo "OTHER DIRS"
+
+
+#     else
+#     	echo "SIGN DEEP $dir"
+#     fi
+# done
+
+
+# for dir in "$appDir/Contents/"*/ ; 
+# do
+#     # echo "SIGN DIR - $dir"
+#     if [ "$dir" = "$appDir/Contents/Frameworks/" ] || [ "$dir" = "$appDir/Contents/Plugins/" ]; then
+#       codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dir"
+#     else
+#       codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$dir"
+#     fi
+# done
+
+
+
+# for dir in "$appDir/Contents/"*/ ; 
+# do
+#     if [ "$dir" = "$appDir/Contents/Frameworks/" ]; then
+
+#       printf "\nFRAMEWORKS\n $dir"
+#       codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dir"
+
+#     elif [ "$dir" = "$appDir/Contents/Plugins/" ]; then
+
+#       # printf "\nPLUGINS\n$dir"
+
+#       for file in $(find "$appDir/Contents/Plugins" -not -path "$appDir/Contents/Plugins" ) ; 
+#       do
+#           if [[ $file == *"bundle"* ]]; then
+#               echo "PRESERVE -> $file"
+#               codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$file"
+#           else
+#               echo "MANUAL SIGN -> $file"
+#               codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "$signature" "$file"  
+#           fi
+#       done
+#       printf "\OTHER DIRS\n$dir"
+
+#     else
+#       codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$dir"
+#     fi
+# done
+

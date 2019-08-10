@@ -1,37 +1,37 @@
 # DISTRIBUTION
 
-## GENERAL
-#### Installing pkg
-When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+## GENERAL TROUBLESHOOTING
+#### INSTALLER
+When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
 
-#### Problems?
+[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter: If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
+
+#### OTHER PROBLEMS
 Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
 
-## APPSTORE DEVELOPMENT / TEST BUILD 
+**Location Log files** 
+
+	  ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log
+[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
+Note that the game will run in sandbox mode.  This means all of its files will be written to ~/Library/Containers/<your app ID>/Data/Library/.  Where the Unity documentation says the log file writes to ~/Library/Logs/Unity/Player.log, the sandboxed version is in ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log.  Also of note, even though the game is sandboxed, it will use the iCloud credentials that the current machine is using.
 
 ### iCloud
 [**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 *Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled, or CloudKit will not work.
 
-### Sandbox Login
-[**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
-When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
-
-### Location Log files 
-	  ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log
-[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
-Note that the game will run in sandbox mode.  This means all of its files will be written to ~/Library/Containers/<your app ID>/Data/Library/.  Where the Unity documentation says the log file writes to ~/Library/Logs/Unity/Player.log, the sandboxed version is in ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log.  Also of note, even though the game is sandboxed, it will use the iCloud credentials that the current machine is using.
-
-## APPSTORE DEVELOPER ID - INDEPENDENT DISTRIBUTION 
+## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
 
-### IF INSTALLER PKG
-[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter:
+## APPSTORE
+### Testing your build
+You can test your Appstore build with the "dev" option and "Mac Appstore validation" set too true in Unity ( see previous chapters )
 
-If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
+#### SANDBOX LOGIN (testing account login)
+[**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
+When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
-## APPSTORE DISTRIBUTION
+
 ### Go to Itunes connect and open your app again
 Fill in the details for your App such as description, keywords,... Make sure here you **DO NOT reference other platforms**. 
 
@@ -53,7 +53,7 @@ In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader.
 [Dilmer Valecillos told of a problem](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/) with newer versions of Application Loader, but we didn't have this problem. The opposite actually, we weren't able to open application loader 3 getting this error: *"To use this application, you must first sign in to Itunes Connect and sign the relevant contracts."* Which we couldn't fix, but we could just do it with Xcode's default Application loader. [Though if you need it: Download link application Loader 3.0](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 ### Check if your build got through. 
-Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **15 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
+Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
 
 ### Add your build for review
 Now open the Prepare for submission (in the Appstore tab of Your game/app). Select your build, fill in the contact info and click on Send for review.
@@ -76,9 +76,9 @@ Does your app contain, display, or access third-party content?
 ### Wait for response from apple
 The review process can go from a few hours up to 7 days depending on the complexity of your game and some other factors like Christmas. 
 
-* The review team works weekends
+* The review team works weekends (not 100% sure though)
 * Updates will always go faster. 
-* In our experience it was only a couple of hours. 
+* In our experience reviews always went fast especially on macOS. So if you're waiting longer than 4 days something is probably wrong. We had a build that got stuck in limbo at which point you just have to cancel the review request and apply again.
 * [Read more on review time](https://www.quora.com/How-long-is-an-app-in-review-on-iTunes-Connect-Does-it-depend-on-robustness/answer/Michael-Schranz-1)
 
 ### Rejected?
@@ -91,11 +91,11 @@ It is probably one of your subcomponent didn’t sign correctly, which you may n
 
 [READ UP ON : Most common reasons for rejection](https://rollout.io/blog/how-long-does-the-apple-review-process-take/)
 
-### In app purchases
+### In app purchase have a delay
 If you are uploading an app with IAP for the first time you have to know that it takes some time for the IAP to get linked with Apple (this also applies to future updates, though updates are alot faster) With us it took about 6 hours (on iOS) so don't do like we did and panic at 6 O'clock in the morning, just go to sleep and give it some time :)  
 
 ### You need to upload a new build?
-Don't worry you don't need to go through everything again. You just run RepeatForUpdatedBuild and it will go through all the steps with the data you used. But don't forget to increase the version or build number in Info.plist for a new build.
+Don't worry you don't need to go through everything again. You just run RepeatForUpdatedBuild and it will go through all the steps with the data you used. But don't forget to increase the version and/or build number in Info.plist for a new build.
 
 ### Cry yourself to sleep
 

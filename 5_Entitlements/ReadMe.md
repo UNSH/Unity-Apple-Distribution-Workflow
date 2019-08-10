@@ -1,11 +1,20 @@
 # Entitlements
 
 ## WHAT YOU NEED TO DO
-### Again open this entitlements.plist with XCode not in text editor. 
+### CREATE ENTITLEMENTS FILE
+Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typo's.*** 
+
+| DIR | 
+|:--|
+|/5_Entitlements/Distribution/entitlements.plist|
+|/5_Entitlements/Development/entitlements.plist|
+
+### WHAT DO I PUT IN
+
 Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*.
 
 * [Find more info on all keys here.](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5)
-* There are 3 examples in the _Examples folder as a reference.
+* There are other examples in "5_Entitlements/Examples" folder to use as a reference.
 * You can find **com.apple.application-identifier** & **com.apple.developer.team-identifier** in your provisioining profile. 
 * Alternatively TeamID can also be found in [Membership tab of Apple Developer Portal](https://developer.apple.com/account/#/membership/)
 
@@ -18,6 +27,16 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.aps-environment | **development** | Development build *WITH* Services |
 | com.apple.developer.icloud-container-identifiers | **CloudKit** | iCloud |
 | com.apple.developer.icloud-services | **your container identifier** | iCloud |
+
+## DEVELOPMENT BUILDS
+There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
+
+### iCloud Development
+In the examples you can find other entitlements and an iCloud example to use it  just move the file from examples to Development and rename it to "entitlement.plist" Be sure to read the Readme of SignAndPackage because you will need to preform another step with optool.
+
+Depending on what you need you can bump into crashes when your app tries to access a specific service of function that requires entitlements. The crash report will tell you that an entitlement is needed. will need to adjust your [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) accordingly.   
+
+#### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 
 ## WHY
 When you sign your code you need to add the correct entitlements, meaning you describe what you will access and need or in other words what the app can be expected to do. Codesign will use this information in the signature.  
@@ -33,11 +52,6 @@ connect to outside websites, use camera, access public folders like Pictures, �
 [**QUOTE Zwilnik**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 You’ll need the App Sandbox entitlement (set to YES) and if you’re accessing anything on the internet, you’ll need com.apple.security.network.client set to YES too
 To cover Game-Center you have to manually add the following entitlements in your entitlements file (normally Xcode would handle this for you..) com.apple.application-identifier & com.apple.developer.team-identifier
-
-## SERVICES & DEVELOPMENT BUILD
-If you do not use services such as iCloud you can create a development build without codesigning with your entitlements. If you do use them and want to test you will need to adjust your entitlements accordingly. If not you will be able to run your build but it will crash when you make access the service. Currently we only know iCloud requires this but we haven't tested anything else so you will need to adjust the [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) when problems rise. There is a specific template file for this purpose in the examples folder.    
-
-#### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 
 ## DIY Entitlements
 Create your entitlements file and place it in the same folder as your build. You could place it anywhere you just have to reference the correct folder when you call codesign in the terminal.

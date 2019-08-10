@@ -1,14 +1,17 @@
 # UNITY APPLE DISTRIBUTION WORKFLOW
+Workflow to automate and guide people in delivering Unity builds for macOS.
 
-Workflow to automate and guide people in delivering Unity builds inside or outside of the Appstore.
+## DISCLAIMER 
 
-**CAUTION** building for outside the Appstore may still need some work.
+We delivered builds to the Appstore using this script but beyond that it is possible that some things are not correct (e.g. iCloud, Building for outside the Appstore, ... ) Things also change often so if you notice a mistake don't hesitate to tell in the thread below.  
 
 [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) [ISSUE Link](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)
 
-## GENERAL PROBLEMS
 
-#### Bug Unity 2018 Results in Apple rejection  
+
+## BUGS  
+
+### Unity 2018 Results in Apple rejection  
 There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
 Fix from Giorgos
@@ -24,62 +27,67 @@ Fix from Giorgos
 5. File -> Save
 6. Proceed to signing
 
-#### Bug Unity Purchasing and closing a build
+### Unity Purchasing and closing a build
 There is a bug with OSX/MacOS and Unitypurchasing. When quitting your build either takes up to 10 seconds to close or outright crashes. We are not 100% sure if it has something to do with our setup or not, so just see if your build closes properly, if it does ignore this. Below is currently the only fix I have found taken from this [Issue](https://issuetracker.unity3d.com/issues/osx-enabling-unitypurchasing-on-mac-standalone-causes-builds-to-hang-when-quitting-them). Place this on an object that will live throughout your game/app. 
+
 ```
-void OnApplicationQuit() {
+void OnApplicationQuit() 
+{
   if (!Application.isEditor) { System.Diagnostics.Process.GetCurrentProcess().Kill(); } 
 }
 ```
 
 We decided to leave IAP behind though and disable Purchasing altogether. If you are developing for more Platforms and like us want to use Purchasing in them, just wrap the code for initialising (in unitypurchasing) in [platform dependant directives](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html).
 
-### Bug Unity 2018 & Mavericks 
-We got complaints from users that our build crashes upon startup apparently this is caused by a bug between Unity 2018 and Mavericks so if you are using 2018 best to set the Minimum system version to 10.10.0 in your info.plist. [macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+### Unity 2018 & Mavericks 
+ If you are supporting users on Mavericks make sure you have added OpenGlCore Graphics Library otherwise if you only use Metal you can set the Minimum system version to 10.10.0 in your Info.plist (see chapter Info.plist)
 
-## Instructions
+[macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+
+## INSTRUCTIONS
 ### You're new at this?
 For a first build just follow all the steps. In each folder you will find instructions to deal with the problem at hand in chronology. After you finished the steps a first time you can just run "RepeatForUpdatedBuild" to quickly repeat the whole process. But you **need** to finish the steps so all the data used is correct otherwise problems will arise. 
 
 ### You've been here for a while?
-If you already have all the necessaries you can place them in their respective directories, following the table below and run "RepeatForUpdatedBuild".  The development profile is placed in the Appstore dir, because you only need it to test Appstore features.
+If you already have all the necessaries you can place them in their respective directories, following the table below and run "RepeatForUpdatedBuild"
 
 | WHAT | DIR |
 |:--|:--|
-| DEV.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development/  |
-| APPSTORE_DIST.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Distribution  |
-| DEV_ID_DIST.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/  |
+| DEV.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Development/  |
+| APPSTORE.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/ |
+| DEV_ID.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Developer/  |
 | YOURGAME | 1_MyBuild/ |
 |PlayerIcon.icns|2_Icons/MyOsxIcon/|
 |UnityPlayerIcon.png|2_Icons/MyUnityPlayerIcon/|
 | Info.plist | 4_InfoPlist/ |
-| entitlements.plist | 5_Entitlements/ |
+| entitlements.plist | 5_Entitlements/Distribution/ |
+| **OPTIONAL** (entitlements.plist) | 5_Entitlements/Development/ |
 
 ## Scripts
 All scripts (and todos) are described in more detail in each folder. As everything is automated there are also failsafes in place for overwriting or to check if needed files are present. We will not describe all of those, but you can view the script to see what is happening.
 
-###### OSX Icon 
+### OSX Icon 
 Creates PlayerIcon.icns & UnityPlayerIcon.png from single png file and placed them in BUILD/Contents/resources/
 
-###### Delete Meta Files
+### Delete Meta Files
 Script to Delete meta files in *"BUILD/Contents/Plugins/plugin_x"*
 
-###### ImportPlist
+### ImportPlist
 Info.plist is copied from *"BUILD/Contents/"* to *"4_InfoPlist/"* so you can update it manually once and reuse it after.
 
-###### CopyPlist
+### CopyPlist
 Copies your manually updated Info.plist from *"4_InfoPlist/"* to *"BUILD/Contents/"*
 
-###### PluginsReplaceBundleId
-Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours (taken from *"4_InfoPlist/Info.plist"*).
+### PluginsReplaceBundleId
+Takes the adjusted Info.plist and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
 
-###### Entitlements.plist templates
+### Entitlements.plist templates
 Self explanatory.
 
-###### SignAndPackage
-- Create a version folder structure for your builds. 
+### SignAndPackage
+- Create a version folder structure for your builds in 7_Distribution/
 - Copies the correct provisioning profile as embedded.provisionprofile to *"BUILD/Contents/"* depending on Appstore, Development or Distribution choice.
-- Signs all code with your entitlements. Loops over bundles in plugins, finds .dylib files in Frameworks, Deep signs app.
+- Signs all code with your entitlements. Loops over bundles in plugins, finds .dylib files in Frameworks, signs app.
 - Verify
 - Builds signed package for either Appstore, Development or Distribution outside Appstore (installer or zip)
 
@@ -89,7 +97,7 @@ Script that calls all the other scripts to speed up preparing updates and creati
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
 
-## Credit
+## CREDIT
 We do not take credit for anything besides creating this workflow, tying the code we found together in bash with added automation and organising & rehashing documentation. Below are the credits for all the posts, threads we used. If we missed a spot please contact us. 
 
 We created this workflow because delivering a Unity build to Apple is a mess and the answer is spread across several websites which makes it hard to wrap your head around the correct final chronology especially if you're new or on Windows.
@@ -119,7 +127,7 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 |:--|:--|:--|
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
 |[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
-| post | Your name | page | 
+
  
 
 

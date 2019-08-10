@@ -1,14 +1,17 @@
 # UNITY APPLE DISTRIBUTION WORKFLOW
+Workflow to automate and guide people in delivering Unity builds for macOS.
 
-Workflow to automate and guide people in delivering Unity builds inside or outside of the Appstore.
+## DISCLAIMER 
 
-**CAUTION** building for outside the Appstore may still need some work.
+We delivered builds to the Appstore using this script but beyond that it is possible that some things are not correct (e.g. iCloud, Building for outside the Appstore, ... ) Things also change often so if you notice a mistake don't hesitate to tell in the thread below.  
 
 [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) [ISSUE Link](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)
 
-## GENERAL PROBLEMS
 
-#### Bug Unity 2018 Results in Apple rejection  
+
+## BUGS  
+
+### Unity 2018 Results in Apple rejection  
 There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
 Fix from Giorgos
@@ -24,62 +27,67 @@ Fix from Giorgos
 5. File -> Save
 6. Proceed to signing
 
-#### Bug Unity Purchasing and closing a build
+### Unity Purchasing and closing a build
 There is a bug with OSX/MacOS and Unitypurchasing. When quitting your build either takes up to 10 seconds to close or outright crashes. We are not 100% sure if it has something to do with our setup or not, so just see if your build closes properly, if it does ignore this. Below is currently the only fix I have found taken from this [Issue](https://issuetracker.unity3d.com/issues/osx-enabling-unitypurchasing-on-mac-standalone-causes-builds-to-hang-when-quitting-them). Place this on an object that will live throughout your game/app. 
+
 ```
-void OnApplicationQuit() {
+void OnApplicationQuit() 
+{
   if (!Application.isEditor) { System.Diagnostics.Process.GetCurrentProcess().Kill(); } 
 }
 ```
 
 We decided to leave IAP behind though and disable Purchasing altogether. If you are developing for more Platforms and like us want to use Purchasing in them, just wrap the code for initialising (in unitypurchasing) in [platform dependant directives](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html).
 
-### Bug Unity 2018 & Mavericks 
-We got complaints from users that our build crashes upon startup apparently this is caused by a bug between Unity 2018 and Mavericks so if you are using 2018 best to set the Minimum system version to 10.10.0 in your info.plist. [macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+### Unity 2018 & Mavericks 
+ If you are supporting users on Mavericks make sure you have added OpenGlCore Graphics Library otherwise if you only use Metal you can set the Minimum system version to 10.10.0 in your Info.plist (see chapter Info.plist)
 
-## Instructions
+[macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+
+## INSTRUCTIONS
 ### You're new at this?
 For a first build just follow all the steps. In each folder you will find instructions to deal with the problem at hand in chronology. After you finished the steps a first time you can just run "RepeatForUpdatedBuild" to quickly repeat the whole process. But you **need** to finish the steps so all the data used is correct otherwise problems will arise. 
 
 ### You've been here for a while?
-If you already have all the necessaries you can place them in their respective directories, following the table below and run "RepeatForUpdatedBuild".  The development profile is placed in the Appstore dir, because you only need it to test Appstore features.
+If you already have all the necessaries you can place them in their respective directories, following the table below and run "RepeatForUpdatedBuild"
 
 | WHAT | DIR |
 |:--|:--|
-| DEV.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development/  |
-| APPSTORE_DIST.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Distribution  |
-| DEV_ID_DIST.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/  |
+| DEV.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Development/  |
+| APPSTORE.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/ |
+| DEV_ID.provisionprofile | 0_BeforeYouBuild/ProvisioningProfiles/Developer/  |
 | YOURGAME | 1_MyBuild/ |
 |PlayerIcon.icns|2_Icons/MyOsxIcon/|
 |UnityPlayerIcon.png|2_Icons/MyUnityPlayerIcon/|
 | Info.plist | 4_InfoPlist/ |
-| entitlements.plist | 5_Entitlements/ |
+| entitlements.plist | 5_Entitlements/Distribution/ |
+| **OPTIONAL** (entitlements.plist) | 5_Entitlements/Development/ |
 
 ## Scripts
 All scripts (and todos) are described in more detail in each folder. As everything is automated there are also failsafes in place for overwriting or to check if needed files are present. We will not describe all of those, but you can view the script to see what is happening.
 
-###### OSX Icon 
+### OSX Icon 
 Creates PlayerIcon.icns & UnityPlayerIcon.png from single png file and placed them in BUILD/Contents/resources/
 
-###### Delete Meta Files
+### Delete Meta Files
 Script to Delete meta files in *"BUILD/Contents/Plugins/plugin_x"*
 
-###### ImportPlist
+### ImportPlist
 Info.plist is copied from *"BUILD/Contents/"* to *"4_InfoPlist/"* so you can update it manually once and reuse it after.
 
-###### CopyPlist
+### CopyPlist
 Copies your manually updated Info.plist from *"4_InfoPlist/"* to *"BUILD/Contents/"*
 
-###### PluginsReplaceBundleId
-Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours (taken from *"4_InfoPlist/Info.plist"*).
+### PluginsReplaceBundleId
+Takes the adjusted Info.plist and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
 
-###### Entitlements.plist templates
+### Entitlements.plist templates
 Self explanatory.
 
-###### SignAndPackage
-- Create a version folder structure for your builds. 
+### SignAndPackage
+- Create a version folder structure for your builds in 7_Distribution/
 - Copies the correct provisioning profile as embedded.provisionprofile to *"BUILD/Contents/"* depending on Appstore, Development or Distribution choice.
-- Signs all code with your entitlements. Loops over bundles in plugins, finds .dylib files in Frameworks, Deep signs app.
+- Signs all code with your entitlements. Loops over bundles in plugins, finds .dylib files in Frameworks, signs app.
 - Verify
 - Builds signed package for either Appstore, Development or Distribution outside Appstore (installer or zip)
 
@@ -89,7 +97,7 @@ Script that calls all the other scripts to speed up preparing updates and creati
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
 
-## Credit
+## CREDIT
 We do not take credit for anything besides creating this workflow, tying the code we found together in bash with added automation and organising & rehashing documentation. Below are the credits for all the posts, threads we used. If we missed a spot please contact us. 
 
 We created this workflow because delivering a Unity build to Apple is a mess and the answer is spread across several websites which makes it hard to wrap your head around the correct final chronology especially if you're new or on Windows.
@@ -119,7 +127,7 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 |:--|:--|:--|
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
 |[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
-| post | Your name | page | 
+
  
 
 
@@ -127,6 +135,11 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 Just place this workflow somewhere outside of your Unity project.
 
 ## INSTRUCTIONS (APPLE)
+### Download & Install Xcode from the App Store if you haven't already.
+[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
+
+You can also use it to open your .plist files later. Or alternatively to create your icon without the scripts.
+
 ### Create Apple Developer Account 
 If you do not already have one go to [Apple Developer portal](https://developer.apple.com/) and pay 100$ to get confused by professionals. And you might as well enable **AUTO RENEW** in the membership tab at [Apple Developer portal](https://developer.apple.com/). So you avoid surprises. 
 
@@ -140,20 +153,28 @@ Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certi
 
 **IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have used old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
 
-#### Selling on the APPSTORE
-1. Mac Installer Distribution
-2. Mac App Distribution
-3. Mac Development (for a test build)
+#### DEVELOPMENT
+| CERTIFICATE NAME | DESC |
+|:--|:--|
+| Mac Development | Sign development versions of your Mac app |
 
-#### Selling outside the Appstore
-1. Developer ID Application
-2. ~~Developer ID Installer~~?
+#### APPSTORE DISTRIBUTION
+| CERTIFICATE | DESC |
+|:--|:--|
+| Mac App Distribution | This certificate is used to code sign your app and configure a Distribution Provisioning Profile for submission to the Mac App Store. |
+| Mac Installer Distribution | This certificate is used to sign your app's Installer Package for submission to the Mac App Store. |
+
+#### NON-APPSTORE DISTRIBUTION
+| CERTIFICATE | DESC |
+|:--|:--|
+| Developer ID Application | This certificate is used to code sign your app for distribution outside of the Mac App Store. |
+| Developer ID Installer | This certificate is used to sign your app's Installer Package for distribution outside of the Mac App Store. |
 
 ### Create an App Identifier 
 [Apple Developer Portal Go to App Identifiers](https://developer.apple.com/account/mac/identifier/bundle/). Examples : COM.COMPANY.PRODUCT, UNITY.COMPANY.PRODUCT, ... It's up to you. Note that you cannot disable In App Purchase. IAP is always enabled, but if you don't implement any button or script in Unity you can just ignore this. [More info on bundle identifiers here](https://cocoacasts.com/what-are-app-ids-and-bundle-identifiers/)
 
 #### Capabilities 
-Enable any services such as (iCloud, Game Center, ...) you are going to use and configure them if necessary. It's important you do this before you download your Provisioning Profile so that this information can be included in these profiles.
+Enable any services such as (iCloud, Game Center, ...) you are going to use and configure them if necessary. It's important you do this before you download your Provisioning Profile so that this information can be included in your profiles.
 
 **iCloud** To create a single app that shares data through iCloud you always need to create separate App Identifiers for iOS/tvOS and macOS. And seeing that Unity builds with iOS can use Xcode it's easier to configure them on iOS.
 
@@ -191,17 +212,12 @@ These will be copied later into your app as embedded.provisionprofile ( dependan
 
 | PROFILE | FOLDER |
 |:--|:--|
-| Development | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development/MY.provisionprofile |
-| Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Distribution/MY.provisionprofile |
-|Outside Appstore| 0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/MY.provisionprofile |
+| Development | 0_BeforeYouBuild/ProvisioningProfiles/Development/RESPECTIVE.provisionprofile |
+| Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Appstore/RESPECTIVE.provisionprofile |
+|Outside Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Developer/RESPECTIVE.provisionprofile |
 
 **QUOTE** "Zwilnik @ [Strange flavour](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/)"
 *Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.*
-
-### Download & Install Xcode from the App Store if you haven't already.
-[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
-
-You will also need it to open your .plist files later. Or alternatively to create your icon without the scrips.
 
 ## INSTRUCTIONS UNITY
 
@@ -218,15 +234,24 @@ Add to any GO that will live @ startup to fix retina on large screens.
 ### Double check in Project Settings > Player Settings 
 If you want to build for outside the Appstore, make sure you uncheck Mac Appstore validation in your build.
 
-1. Mac Appstore validation = true
-2. Default is Full Screen = true
-3. Default is Native Resolution = true
-4. Capture Single Screen = false
-5. Display Resolution Dialog = false
-
-You can enter all of the other OSX values later in your Info.plist which is more typo proof as it has dropdown for certain values.
+| SETTING | STATE |
+|:--|:--|
+|Mac Appstore validation | true (if building for Appstore) |
+|Default is Full Screen | true |
+|Default is Native Resolution | true |
+|Capture Single Screen | false |
+|Version | Read below |
+|Build | Read below |
 
 [**CREDITS / READ MORE Victor Leung**](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)
+
+### Version
+| KEY | VALUE |
+|:--|:--|
+|**Version** | Build or version number should always be increased each time you upload to the Appstore as you cannot upload a package with identical version & build [More on Version & build](https://stackoverflow.com/a/19728342)|
+|**Build**| Used to upload packages to the Appstore that you do not want to show in your public version. Can be the same as ShortVersionString, but if you want to change your screenshots at the Appstore you will need to send them a new package, with build you could hide this new version without increasing your version number.|
+
+Don't use 0 in your decimals when you define your version.  e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. So either 1.0.1 or 1.11
 
 ### Make sure:
 - If you are building for more platforms not to include links or references to them.
@@ -235,7 +260,7 @@ You can enter all of the other OSX values later in your Info.plist which is more
 - Double check if all your buttons work.
 - [Read this](https://developer.apple.com/app-store/review/rejections/)
 
-### Using Unity IAP and Non-Consumable unlock? 
+### Using Unity IAP & disable menu 
 Make sure you do not immediately close the Menu containing the IAP button with onPurchaseComplete. If you do use Invoke to delay the closing for 0.1 seconds otherwise you will have problems. It will seem to work on some devices but with others your purchase will not come through.
 
 ### Build your game and place your build in “/1_MyBuild”
@@ -268,7 +293,7 @@ Either use this icon as a base or:
 5. Create a UnityPlayerIcon.png in correct size (64x64)
 6. Copy both “UnityPlayerIcon.png” and “PlayerIcon.icns” to *“1_MyBuild/YOUR.APP/Contents/Resources”* and replace what unity made.
 
-###### Problem 
+#### Problem 
 On High Sierra there is no way to create an icns file that includes all 10 required sizes through icon util (Everything but 16X16@1x and 32x32@1x). The only way to do this is to run this script on an older OS. I believe I did it with Sierra. You can open .ICNS files with preview to double check. I am not sure if this is a problem though. I have read not all are necessary. But if you are obsessive on details like me there is no other way. Believe me I have tried it all. Nothing worked besides running the IconUtil on an older OS.
 
 ## WHY
@@ -317,21 +342,60 @@ Open *"YOUR_BUILD/Contents/Plugins/"* open each bundle and delete all the meta f
 # INFO.PLIST
 
 ## INSCRUCTIONS
-###### Run ImportPlistFromYourBuild if you don't an Info.plist
+
+Currently the only 3 values of interest are: 
+
+| KEY | VALUE | DESC|
+|:--|:--|:--|
+|App Uses Non-Exempt Encryption| **TRUE/FALSE** | "App is using encryption that is exempt from [EAR](https://www.bis.doc.gov/index.php/encryption-and-export-administration-regulations-ear)" **Before you scare read**  [Short answer](https://stackoverflow.com/a/46691541), [this for Unity](http://answers.unity.com/answers/669794/view.html), and [this by Unity](https://forum.unity.com/threads/us-export-compliance-encryption.389208/#post-2893835) |
+
+| LSMinimumSystemVersion | 10.XX.X | Limit OS [Version history](https://en.wikipedia.org/wiki/MacOS_version_history) |
+|GetInfoString | Copyright COMPANY 2022 | **The copyrights** to your game instead of Unity's |
+
+### RUN "ImportPlistFromYourBuild"
 Will take the Info.plist from 1_MyBuild/YOUR.APP/Contents/Info.plist and paste it here. If there is already one in this folder it will make a backup copy just to be sure.
 
-###### Open your Info.plist @ 4_InfoPlist/
-Don't open in an editor, just double click and open with Xcode so you have access to the dropdown values to avoid typo's. 
+| FROM | TO |
+|:--|:--|
+| 1_MyBuild/YOUR.APP/Contents/Info.plist | 4_InfoPlist/Info.plist |
 
-In the examples folder you can find an empty example (that we used) for reference.
+### EDIT "4_InfoPlist/Info.plist"
+Just double click and open with Xcode so you have access to the dropdown values to avoid typo's. Change the values where needed using the first table.
 
-### IMPORTANT Version
-Don't use 0 in your decimals when you define your version. Always increase your versions above zero e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. 
+### RUN “CopyPlist” 
+Will replace the Info.plist in your build with the one you just made.
 
-### IMPORTANT Bug Unity 2018 & Mavericks (OSX 10.9)
-We got complaints from users that our build crashes upon startup apparently this is caused by a bug between Unity 2018 and Mavericks so if you are using 2018 best to set the Minimum system version to 10.10.0 in your info.plist. [macOS Version History](https://en.wikipedia.org/wiki/MacOS_version_history)
+| FROM | TO |
+|:--|:--|
+| 4_InfoPlist/Info.plist | 1_MyBuild/YOUR.APP/Contents/Info.plist |
 
-### Now check these values
+## WHY
+Every app and plug-in uses an Info.plist file to store configuration data in a place where the system can easily access it. macOS and iOS use Info.plist files to determine what icon to display for a bundle, what document types an app supports, and many other behaviors that have an impact outside the bundle itself.
+[More info on Info.plist @ Apple](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html)
+
+1. Unity does not update all fields
+2. Every time you build in Unity the file is overwitten so you need to keep a copy here that you can replace every build.
+	- [**QUOTE “Matthias @ Gently Mad“**](https://gentlymad.org/blog/post/deliver-mac-store-unity)
+Save the Info.plist inside your package and don’t forget to create a copy since Unity will overwrite the file the next time you make a build!
+
+## PluginsReplaceBundleId
+### What it does
+Takes the Info.plist you just made and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
+### Why
+Even the Unity services bundles need your BundleIdentifier, otherwise you will get errors when uploading to the Appstore.
+
+[QUOTE N3uRo](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/) Edit other "*.bundle"s Info.plist that has a "CFBundleIdentifier" to point to your identifier also. I had a problem with AVPro that had it's own identifier that was not valid.
+
+### Why not
+According to [ Joel @Kittehface.com ] (http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) replacing the Info.plists is not neccesary, but it hasn't been tested with a Distribution build that passed a review yet.
+
+## DIY Info.plist
+1. Adjust the above values in your YOUR_BUILD/Contents/Info.plist
+2. (MAYBE) So open YOUR_BUILD/Contents/Plugins/each_bundle/Info.Plist And replace the BundleIdentifier with yours.
+
+---------
+# DEPRICATED
+## VALUES THAT NEEDED TO BE AJUSTED
 
 | KEY | VALUE |
 |:--|:--|
@@ -348,43 +412,23 @@ We got complaints from users that our build crashes upon startup apparently this
 | LSMinimumSystemVersion | Set to 10.10.0 if you are on Unity 2018 [Version history](https://en.wikipedia.org/wiki/MacOS_version_history) |
 
 
-### Run “CopyPlist” 
-Will replace the Info.plist in your build with the one you just made.
-
-| FROM | TO |
-|:--|:--|
-| 4_InfoPlist/Info.plist | 1_MyBuild/YOUR.APP/Contents/Info.plist |
-
- 
-
-### Run PluginsReplaceBundleId
-Takes the Info.plist you just made and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours. 
-
-* Even the Unity services bundles need your BundleIdentifier, otherwise you will get errors when uploading to the Appstore.
-* **[QUOTE N3uRo](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/)**
-Edit other "*.bundle"s Info.plist that has a "CFBundleIdentifier" to point to your identifier also. I had a problem with AVPro that had it's own identifier that was not valid.
-
-## WHY
-Every app and plug-in uses an Info.plist file to store configuration data in a place where the system can easily access it. macOS and iOS use Info.plist files to determine what icon to display for a bundle, what document types an app supports, and many other behaviors that have an impact outside the bundle itself.
-[More info on Info.plist @ Apple](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html)
-
-1. Unity does not update all fields
-2. Every time you build in Unity the file is overwitten so you need to keep a copy here that you can replace every build.
-	- [**QUOTE “Matthias @ Gently Mad“**](https://gentlymad.org/blog/post/deliver-mac-store-unity)
-Save the Info.plist inside your package and don’t forget to create a copy since Unity will overwrite the file the next time you make a build!
-
-## DIY Info.plist
-1. Create your manually updated Info.plist and replace the one in YOUR_BUILD/Contents/
-2. So open YOUR_BUILD/Contents/Plugins/each_bundle/Info.Plist
-And replace the BundleIdentifier with yours.
 # Entitlements
 
 ## WHAT YOU NEED TO DO
-### Again open this entitlements.plist with XCode not in text editor. 
+### CREATE ENTITLEMENTS FILE
+Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typo's.*** 
+
+| DIR | 
+|:--|
+|/5_Entitlements/Distribution/entitlements.plist|
+|/5_Entitlements/Development/entitlements.plist|
+
+### WHAT DO I PUT IN
+
 Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*.
 
 * [Find more info on all keys here.](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5)
-* There are 3 examples in the _Examples folder as a reference.
+* There are other examples in "5_Entitlements/Examples" folder to use as a reference.
 * You can find **com.apple.application-identifier** & **com.apple.developer.team-identifier** in your provisioining profile. 
 * Alternatively TeamID can also be found in [Membership tab of Apple Developer Portal](https://developer.apple.com/account/#/membership/)
 
@@ -397,6 +441,16 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.aps-environment | **development** | Development build *WITH* Services |
 | com.apple.developer.icloud-container-identifiers | **CloudKit** | iCloud |
 | com.apple.developer.icloud-services | **your container identifier** | iCloud |
+
+## DEVELOPMENT BUILDS
+There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
+
+### iCloud Development
+In the examples you can find other entitlements and an iCloud example to use it  just move the file from examples to Development and rename it to "entitlement.plist" Be sure to read the Readme of SignAndPackage because you will need to preform another step with optool.
+
+Depending on what you need you can bump into crashes when your app tries to access a specific service of function that requires entitlements. The crash report will tell you that an entitlement is needed. will need to adjust your [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) accordingly.   
+
+#### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 
 ## WHY
 When you sign your code you need to add the correct entitlements, meaning you describe what you will access and need or in other words what the app can be expected to do. Codesign will use this information in the signature.  
@@ -413,20 +467,25 @@ connect to outside websites, use camera, access public folders like Pictures, �
 You’ll need the App Sandbox entitlement (set to YES) and if you’re accessing anything on the internet, you’ll need com.apple.security.network.client set to YES too
 To cover Game-Center you have to manually add the following entitlements in your entitlements file (normally Xcode would handle this for you..) com.apple.application-identifier & com.apple.developer.team-identifier
 
-## SERVICES & DEVELOPMENT BUILD
-If you do not use services such as iCloud you can create a development build without codesigning with your entitlements. If you do use them and want to test you will need to adjust your entitlements accordingly. If not you will be able to run your build but it will crash when you make access the service. Currently we only know iCloud requires this but we haven't tested anything else so you will need to adjust the [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) when problems rise. There is a specific template file for this purpose in the examples folder.    
-
-#### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
-
 ## DIY Entitlements
 Create your entitlements file and place it in the same folder as your build. You could place it anywhere you just have to reference the correct folder when you call codesign in the terminal.
 # Sign, package build & Deliver
 ## SIGN & PACKAGE
-### Get your team name & team id 
-###### OPTION 1
+### GET YOUR TEAM NAME & TEAM ID 
+
+#### OPTION 1
 From your keychain. Looks like this “TEAM NAME (XXXXXXXXXX)” Where the XXXXXXXXXX is your team id. Copy it exactly as it is, so no spaces before or after. [Example where to find](https://apple.stackexchange.com/a/312503) 
 
-###### OPTION 2 
+#### OPTION 2
+Select the profile in the finder and press space to preview the file, then look for:
+
+###### Development.profile
+	Certificates > Mac Developer : "YOUR NAME (XXXXXXXXXX)"
+
+###### Distribution.profile
+	Team > "TEAM NAME (XXXXXXXXXX)" 
+
+#### OPTION 3 
 Like in the previous chapter go to [Membership](https://developer.apple.com/account/#/membership/) and copy your team name and team ID there and put it in this format: “TEAM NAME (XXXXXXXXXX)”
 
 **IMPORTANT** If your team name has spaces in it they also have to be included. So full team name including spaces then again a space after and then in between parentheses your team id. Ok three examples:
@@ -435,9 +494,15 @@ Like in the previous chapter go to [Membership](https://developer.apple.com/acco
 2. JOHN CRIED (DGHHJF45F4)
 3. JOHN CRIED INC (DGHHJF45F4)
 
-### IF development build with iCloud
+#### DEVELOPMENT
+To sign your testing builds you need a personal name and id. Note that the ID is different than your team id (the XXXXXXXXXX) You can find them in the same places previously described. The format stays the same only it's your name (if you set up your Mac with your name) So example
 
-[QUOTE Joel @Kitteh Face :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
+1. JOHN HOLEDIGGER (SKI9PF020A)
+2. JOHN THE HOLEDIGGER (SKI9PF020A)
+
+### BUILD WITH ICLOUD
+
+[TAKEN FROM Joel @Kittehface.com :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
 
 Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
 	 
@@ -447,16 +512,16 @@ Modify the Unity executable to link the CloudKit framework. Following from the e
 	
 We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
 
-### Run “SignAndPackage”
+### RUN “SignAndPackage”
 1. When prompted type your team name
-2. When prompted enter : dev, appstore or outside
-3. If building for outside Appstore, you will be prompted again to choose between zip or installer.
+2. When prompted enter : dev, appstore, installer,zip
 
 | INPUT | WILL CREATE PACKAGE FOR | AT |
 |:--|:--|:--|
-| dev | Appstore development | 7_Distribution/Appstore/Development/VERSION/ |
-| appstore| Appstore distribution | 7_Distribution/Appstore/Distribution/VERSION/ |
-| outside | Distribution outside Appstore | 7_Distribution/Outside Appstore/CHOICE/VERSION/ |
+| dev | Development | 7_Distribution/VERSION/Development |
+| appstore| Appstore | 7_Distribution/VERSION/Appstore/ |
+| installer | Distribute outside Appstore | 7_Distribution/VERSION/Installer/ |
+| zip | Distribute outside Appstore | 7_Distribution/VERSION/Zip/ |
 
 **IMPORTANT** if signing is successful and you have signed for the first time you will be prompted to add “codesign” to your keychain. **Always allow**
 
@@ -464,7 +529,14 @@ We found that without this - even though the CloudKit framework is linked in the
 
 1. If you have an error on ambiguous identity, you might have double certificates or old ones. [check here](https://stackoverflow.com/a/32926182)
 2. If the identity cannot be found double check your keychain and check your certificates & keys to make sure you have them. Otherwise go back to the first chapter and follow create certificates. 
+3. If you get the error "No identity found" make sure you installed the correct certificate in your keychain
 
+### NOTARISATION
+Based on [this post](https://forum.unity.com/threads/notarizing-osx-builds.588904/) notarisation requires the **--timestamp** & -**-options=runtime** code sign options. We have not released a build with notarisation so will report back when we know more. Both have been included in all distribution code signs.
+
+- [Apple Notarisation General info](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution) 
+- [Apple Notarisation code sign troubleshooting](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/resolving_common_notarization_issues)
+- [Apple Notarisation Command line](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/customizing_the_notarization_workflow)
 ## WHAT WILL HAPPEN
 ### Creates a folder structure with version names for your builds
 Reads your new Info.plist and finds version & build to create a final folder based on your values so you can keep track of which builds were made for what. If you use the same value for build & version only version will be used, otherwise it will create a folder named "VERSION"+b+"BUILD" (e.g. 1.0b0).
@@ -479,47 +551,38 @@ Depending on your choice between appstore, dev or outside the  correct provision
 |:--|:--|
 |0_BeforeYouBuild/ProvisioningProfiles/CHOICE/MY.provisioningprofile |1_MyBuild/YOUR_GAME/Contents/embedded.provisioningprofile |
 
-**NOTE** That when zipping your build this profile will not be included as I am not clear yet if this is required.
+**NOTE** That when zipping your build this profile will not be included as I am not clear yet if this is required. When you build your pkg your profile is integrated. With a zip it would just reside loose in the directory. So as I'm not sure I deleted it before zipping.
 
 ### Code signing
 [All code needs to be signed for your app to be approved.](https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html#//apple_ref/doc/uid/TP40005929-CH4-SW5) Sometimes --deep does not work so we manually sign all the code we (know) and loop over all the .bundles in your plugin folder. For us this worked out, but if you know of more generic libraries that should be added please let me know.
 
-| ALL CODE |
-|:--|
-| appDir/Contents/Frameworks/MonoEmbedRuntime/osx/libmono.0.dylib” |
-|appDir/Contents/Frameworks/MonoEmbedRuntime/osx/libmono.0.dylib”|
-|appDir/Contents/Frameworks/MonoEmbedRuntime/osx/libMonoPosixHelper.dylib”|
-|all .bundle files in /Contents/Plugins/ are signed iteratively|
-|Your app will be signed with --deep ( all subfolders)|
+| PATH | TYPE |
+|:--| :-- |
+|all  files in **appDir/Contents/Frameworks/** | .dylib |
+|all  files in **appDir/Contents/Plugins/** | .bundle |
+|YOUR_BUILD | .app |
+
+If your build is rejected because of unsigned files you will probably need to do this and codesign with --deep, but when we send a build to the App Store I'll adjust this readme. 
 
 ### Verify signed bundle
 See if everything worked out.
 
 ### Depending on your choice a signed package will be made
-At *"/7_Distribution/DISTRIBUTION_CHOICE/VERSION."*
+	At "/7_Distribution/VERSION/CHOICE"
 
-## DIY SIGN & PACKAGE 
-### Provisioning profile
+## DIY CODESIGN & PACKAGE (TERMNIAL)
+#### PROVISIONING PROFILE
 When creating any installer make a duplicate of the correct provisioning profile, rename it to embedded.provisioningprofile and place it in YOUR_BUILD/Contents. [Read more at Strangeflavour](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 
-### What to sign?
+#### WHAT TO SIGN?
 In this order
 
-- You sign both **libmono.0.dylib** & **libMonoPosixHelper.dylib** 
+- You sign all  **dylib** files
 - You sign all your **plugins**
-- You sign **your game** with the "--deep" option
+- You sign **your game**
 
-### CODESIGN TERMNIAL
-
-###### Appstore
-	codesign --entitlements "DIR_Entitlements" --deep --force --verify --sign "3rd Party Mac Developer Application: TEAM NAME (TEAM_ID)" "appDir"
-
-###### Test / developer build
-
-	codesign --deep --force --verify --sign "3rd Party Mac Developer Application: TEAM NAME (TEAM_ID)" "appDir"
-
-###### Outside Appstore
-	codesign --entitlements "DIR_Entitlements" --deep --force --verify --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
+###### EXAMPLE
+	codesign --entitlements "DIR_Entitlements" --force --verify --sign "3rd Party Mac Developer Application: TEAM NAME (TEAM_ID)" --preserve-metadata=identifier,entitlements,flags "appDir"
 
 | OPTION | INFO |
 |:--|:--|
@@ -527,8 +590,34 @@ In this order
 |--force | Resign everything that has been signed |
 |--verify | See if things got signed |
 |--entitlements | Location of your entitlements |
-|--sign | The type of signing with your team name|
-|--preserve-metadata=identifier,entitlements,flags | To sign bundles that are not yours such as libmono.0.dylib |
+|--sign | Signing command |
+|--timestamp | Required for [Notarisation](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/resolving_common_notarization_issues) |
+|--options=runtime | Required for [Notarisation](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/resolving_common_notarization_issues) |
+|--preserve-metadata | Preserve previous signatures [Read More ](https://github.com/bazelbuild/rules_apple/issues/12) |
+| [Codesign Manual](https://www.manpagez.com/man/1/codesign/) | Read up on all options|
+
+| SIGN TYPE | GOAL |
+|:--|:--|:--|
+|--sign "appDir" Mac Developer: DEV NAME (TEAM_ID) | Development |
+|--sign "appDir" Developer ID Application: TEAM NAME (TEAM_ID) | Installer outside Appstore |
+|--sign "appDir" 3rd Party Mac Developer Application: TEAM NAME (TEAM_ID) | Appstore |
+
+### APPSTORE
+
+	codesign --entitlements "DIR_Entitlements" --sign "3rd Party Mac Developer Application: TEAM NAME (TEAM_ID)" "appDir"
+
+### OUTSIDE APPSTORE
+
+	codesign --entitlements "DIR_Entitlements" --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
+
+### DEVELOPMENT BUILD
+###### DYLIB & BUNDLES (Sign without entitlements)
+
+	codesign --sign "Mac Developer: DEV NAME (TEAM_ID)" --preserve-metadata=identifier,entitlements,flags "appDir"
+
+###### YOUR.APP (Sign WITH entitlements)
+
+	codesign --entitlements "DIR_Entitlements" --sign "Mac Developer: DEV NAME (DEV_ID)" "appDir"
 
 ### BUILD PACKAGE TERMINAL 
 
@@ -536,46 +625,43 @@ In this order
 
 	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
-###### Test / developer build
-	productbuild --component “$appDir” “/Applications” --sign "3rd Party Mac Developer Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
-
 ###### Outside Appstore
 	productbuild --component “$appDir” “/Applications” --sign "Developer ID Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 # DISTRIBUTION
 
-## GENERAL
-#### Installing pkg
-When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. So either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
+## GENERAL TROUBLESHOOTING
+#### INSTALLER
+When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
 
-#### Problems?
+[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter: If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
+
+#### OTHER PROBLEMS
 Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
 
-## APPSTORE DEVELOPMENT / TEST BUILD 
+**Location Log files** 
+
+	  ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log
+[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
+Note that the game will run in sandbox mode.  This means all of its files will be written to ~/Library/Containers/<your app ID>/Data/Library/.  Where the Unity documentation says the log file writes to ~/Library/Logs/Unity/Player.log, the sandboxed version is in ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log.  Also of note, even though the game is sandboxed, it will use the iCloud credentials that the current machine is using.
 
 ### iCloud
 [**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 *Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled, or CloudKit will not work.
 
-### Sandbox Login
-[**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
-When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
-
-### Location Log files 
-	  ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log
-[**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
-Note that the game will run in sandbox mode.  This means all of its files will be written to ~/Library/Containers/<your app ID>/Data/Library/.  Where the Unity documentation says the log file writes to ~/Library/Logs/Unity/Player.log, the sandboxed version is in ~/Library/Containers/<your app ID>/Data/Library/Logs/Unity/Player.log.  Also of note, even though the game is sandboxed, it will use the iCloud credentials that the current machine is using.
-
-## APPSTORE DEVELOPER ID - INDEPENDENT DISTRIBUTION 
+## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
 
-### IF INSTALLER PKG
-[QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter:
+## APPSTORE
+### Testing your build
+You can test your Appstore build with the "dev" option and "Mac Appstore validation" set too true in Unity ( see previous chapters )
 
-If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
+#### SANDBOX LOGIN (testing account login)
+[**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
+When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
-## APPSTORE DISTRIBUTION
+
 ### Go to Itunes connect and open your app again
 Fill in the details for your App such as description, keywords,... Make sure here you **DO NOT reference other platforms**. 
 
@@ -597,7 +683,7 @@ In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader.
 [Dilmer Valecillos told of a problem](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/) with newer versions of Application Loader, but we didn't have this problem. The opposite actually, we weren't able to open application loader 3 getting this error: *"To use this application, you must first sign in to Itunes Connect and sign the relevant contracts."* Which we couldn't fix, but we could just do it with Xcode's default Application loader. [Though if you need it: Download link application Loader 3.0](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 ### Check if your build got through. 
-Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **15 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
+Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
 
 ### Add your build for review
 Now open the Prepare for submission (in the Appstore tab of Your game/app). Select your build, fill in the contact info and click on Send for review.
@@ -620,9 +706,9 @@ Does your app contain, display, or access third-party content?
 ### Wait for response from apple
 The review process can go from a few hours up to 7 days depending on the complexity of your game and some other factors like Christmas. 
 
-* The review team works weekends
+* The review team works weekends (not 100% sure though)
 * Updates will always go faster. 
-* In our experience it was only a couple of hours. 
+* In our experience reviews always went fast especially on macOS. So if you're waiting longer than 4 days something is probably wrong. We had a build that got stuck in limbo at which point you just have to cancel the review request and apply again.
 * [Read more on review time](https://www.quora.com/How-long-is-an-app-in-review-on-iTunes-Connect-Does-it-depend-on-robustness/answer/Michael-Schranz-1)
 
 ### Rejected?
@@ -635,11 +721,11 @@ It is probably one of your subcomponent didn’t sign correctly, which you may n
 
 [READ UP ON : Most common reasons for rejection](https://rollout.io/blog/how-long-does-the-apple-review-process-take/)
 
-### In app purchases
+### In app purchase have a delay
 If you are uploading an app with IAP for the first time you have to know that it takes some time for the IAP to get linked with Apple (this also applies to future updates, though updates are alot faster) With us it took about 6 hours (on iOS) so don't do like we did and panic at 6 O'clock in the morning, just go to sleep and give it some time :)  
 
 ### You need to upload a new build?
-Don't worry you don't need to go through everything again. You just run RepeatForUpdatedBuild and it will go through all the steps with the data you used. But don't forget to increase the version or build number in Info.plist for a new build.
+Don't worry you don't need to go through everything again. You just run RepeatForUpdatedBuild and it will go through all the steps with the data you used. But don't forget to increase the version and/or build number in Info.plist for a new build.
 
 ### Cry yourself to sleep
 

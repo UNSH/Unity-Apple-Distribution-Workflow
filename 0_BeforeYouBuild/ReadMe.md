@@ -2,6 +2,11 @@
 Just place this workflow somewhere outside of your Unity project.
 
 ## INSTRUCTIONS (APPLE)
+### Download & Install Xcode from the App Store if you haven't already.
+[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
+
+You can also use it to open your .plist files later. Or alternatively to create your icon without the scripts.
+
 ### Create Apple Developer Account 
 If you do not already have one go to [Apple Developer portal](https://developer.apple.com/) and pay 100$ to get confused by professionals. And you might as well enable **AUTO RENEW** in the membership tab at [Apple Developer portal](https://developer.apple.com/). So you avoid surprises. 
 
@@ -15,20 +20,28 @@ Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certi
 
 **IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have used old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
 
-#### Selling on the APPSTORE
-1. Mac Installer Distribution
-2. Mac App Distribution
-3. Mac Development (for a test build)
+#### DEVELOPMENT
+| CERTIFICATE NAME | DESC |
+|:--|:--|
+| Mac Development | Sign development versions of your Mac app |
 
-#### Selling outside the Appstore
-1. Developer ID Application
-2. ~~Developer ID Installer~~?
+#### APPSTORE DISTRIBUTION
+| CERTIFICATE | DESC |
+|:--|:--|
+| Mac App Distribution | This certificate is used to code sign your app and configure a Distribution Provisioning Profile for submission to the Mac App Store. |
+| Mac Installer Distribution | This certificate is used to sign your app's Installer Package for submission to the Mac App Store. |
+
+#### NON-APPSTORE DISTRIBUTION
+| CERTIFICATE | DESC |
+|:--|:--|
+| Developer ID Application | This certificate is used to code sign your app for distribution outside of the Mac App Store. |
+| Developer ID Installer | This certificate is used to sign your app's Installer Package for distribution outside of the Mac App Store. |
 
 ### Create an App Identifier 
 [Apple Developer Portal Go to App Identifiers](https://developer.apple.com/account/mac/identifier/bundle/). Examples : COM.COMPANY.PRODUCT, UNITY.COMPANY.PRODUCT, ... It's up to you. Note that you cannot disable In App Purchase. IAP is always enabled, but if you don't implement any button or script in Unity you can just ignore this. [More info on bundle identifiers here](https://cocoacasts.com/what-are-app-ids-and-bundle-identifiers/)
 
 #### Capabilities 
-Enable any services such as (iCloud, Game Center, ...) you are going to use and configure them if necessary. It's important you do this before you download your Provisioning Profile so that this information can be included in these profiles.
+Enable any services such as (iCloud, Game Center, ...) you are going to use and configure them if necessary. It's important you do this before you download your Provisioning Profile so that this information can be included in your profiles.
 
 **iCloud** To create a single app that shares data through iCloud you always need to create separate App Identifiers for iOS/tvOS and macOS. And seeing that Unity builds with iOS can use Xcode it's easier to configure them on iOS.
 
@@ -66,17 +79,12 @@ These will be copied later into your app as embedded.provisionprofile ( dependan
 
 | PROFILE | FOLDER |
 |:--|:--|
-| Development | 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Development/MY.provisionprofile |
-| Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Appstore/Distribution/MY.provisionprofile |
-|Outside Appstore| 0_BeforeYouBuild/ProvisioningProfiles/DeveloperID/MY.provisionprofile |
+| Development | 0_BeforeYouBuild/ProvisioningProfiles/Development/RESPECTIVE.provisionprofile |
+| Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Appstore/RESPECTIVE.provisionprofile |
+|Outside Appstore| 0_BeforeYouBuild/ProvisioningProfiles/Developer/RESPECTIVE.provisionprofile |
 
 **QUOTE** "Zwilnik @ [Strange flavour](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/)"
 *Another key step is to include a copy of the provisioning profile in the app bundle before signing it. It goes in the app bundle at Contents/embedded.provisionprofile.  Again, this is something Xcode would do for you normally that you have to do manually when building with Unity.  Do this for both development and distribution builds including the correct development or distribution profile.*
-
-### Download & Install Xcode from the App Store if you haven't already.
-[Xcode is actually required](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/) ( and has to be installed at /Applications ) for a IL2CPP build. If you have more versions of Xcode and run into problems [Read This by Hogwash](https://forum.unity.com/threads/failed-to-create-il2cpp-build-on-osx.530824/#post-3508248)
-
-You will also need it to open your .plist files later. Or alternatively to create your icon without the scrips.
 
 ## INSTRUCTIONS UNITY
 
@@ -93,15 +101,24 @@ Add to any GO that will live @ startup to fix retina on large screens.
 ### Double check in Project Settings > Player Settings 
 If you want to build for outside the Appstore, make sure you uncheck Mac Appstore validation in your build.
 
-1. Mac Appstore validation = true
-2. Default is Full Screen = true
-3. Default is Native Resolution = true
-4. Capture Single Screen = false
-5. Display Resolution Dialog = false
-
-You can enter all of the other OSX values later in your Info.plist which is more typo proof as it has dropdown for certain values.
+| SETTING | STATE |
+|:--|:--|
+|Mac Appstore validation | true (if building for Appstore) |
+|Default is Full Screen | true |
+|Default is Native Resolution | true |
+|Capture Single Screen | false |
+|Version | Read below |
+|Build | Read below |
 
 [**CREDITS / READ MORE Victor Leung**](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)
+
+### Version
+| KEY | VALUE |
+|:--|:--|
+|**Version** | Build or version number should always be increased each time you upload to the Appstore as you cannot upload a package with identical version & build [More on Version & build](https://stackoverflow.com/a/19728342)|
+|**Build**| Used to upload packages to the Appstore that you do not want to show in your public version. Can be the same as ShortVersionString, but if you want to change your screenshots at the Appstore you will need to send them a new package, with build you could hide this new version without increasing your version number.|
+
+Don't use 0 in your decimals when you define your version.  e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. So either 1.0.1 or 1.11
 
 ### Make sure:
 - If you are building for more platforms not to include links or references to them.
@@ -110,7 +127,7 @@ You can enter all of the other OSX values later in your Info.plist which is more
 - Double check if all your buttons work.
 - [Read this](https://developer.apple.com/app-store/review/rejections/)
 
-### Using Unity IAP and Non-Consumable unlock? 
+### Using Unity IAP & disable menu 
 Make sure you do not immediately close the Menu containing the IAP button with onPurchaseComplete. If you do use Invoke to delay the closing for 0.1 seconds otherwise you will have problems. It will seem to work on some devices but with others your purchase will not come through.
 
 ### Build your game and place your build in “/1_MyBuild”
