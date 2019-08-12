@@ -7,7 +7,6 @@ Currently the only 3 values of interest are:
 | KEY | VALUE | DESC|
 |:--|:--|:--|
 |App Uses Non-Exempt Encryption| **TRUE/FALSE** | "App is using encryption that is exempt from [EAR](https://www.bis.doc.gov/index.php/encryption-and-export-administration-regulations-ear)" **Before you scare read**  [Short answer](https://stackoverflow.com/a/46691541), [this for Unity](http://answers.unity.com/answers/669794/view.html), and [this by Unity](https://forum.unity.com/threads/us-export-compliance-encryption.389208/#post-2893835) |
-
 | LSMinimumSystemVersion | 10.XX.X | Limit OS [Version history](https://en.wikipedia.org/wiki/MacOS_version_history) |
 |GetInfoString | Copyright COMPANY 2022 | **The copyrights** to your game instead of Unity's |
 
