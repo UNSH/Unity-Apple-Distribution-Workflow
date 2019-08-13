@@ -92,6 +92,8 @@ Depending on your choice between appstore, dev or outside the  correct provision
 |all  files in **appDir/Contents/Plugins/** | .bundle |
 |YOUR_BUILD | .app |
 
+If your code signing fails with the error "your app is not signed at all" look for missed dylibs in the response and sign them to.
+
 If your build is rejected because of unsigned files you will probably need to do this and codesign with --deep, but when we send a build to the App Store I'll adjust this readme. 
 
 ### Verify signed bundle
