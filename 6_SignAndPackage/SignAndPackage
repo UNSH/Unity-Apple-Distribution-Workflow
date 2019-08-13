@@ -238,19 +238,23 @@ printf "\n\nBUNDLES & DYLIBS\n"
 
 if [ "$BUILD_FOR" = "dev" ] ; then
 
-  for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
+  # for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
+  for bundle in $(find "$appDir/Contents" -name "*.bundle") $(find "$appDir/Contents" -name "*.dylib"); 
   do
-        codesign --deep --force --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"  
+        codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"  
   done
+  printf "\n SIGN APP\n" 
   codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "$signature" "$appDir"
 
 else 
 
-  for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
+  # for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
+  for bundle in $(find "$appDir/Contents" -name "*.bundle") $(find "$appDir/Contents" -name "*.dylib"); 
   do
-      codesign --entitlements "$locationEntitlements" --deep --force --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
+      # codesign --entitlements "$locationEntitlements" --deep --force --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
+      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
   done
-
+  printf "\n SIGN APP\n" 
   printf "\n Codesign with --deep (no preserves metadata on bundles & dylibs)? (y/n) \n"
 
   while read -r DeepSign
