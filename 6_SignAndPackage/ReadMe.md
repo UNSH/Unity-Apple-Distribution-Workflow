@@ -1,4 +1,17 @@
 # Sign, package build & Deliver
+### BUILD WITH ICLOUD
+First before signing you have to edit the Unity binary following this step from Kittehface (If you already signed then sign again after this step) You have to sign last because this step will modify your build which will subsequently invalidate your signing.
+
+[TAKEN FROM Joel @Kittehface.com :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
+
+Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
+	 
+1. You need to use the third party tool [optool](https://github.com/alexzielenski/optool).
+2. Run the command **optool install -c load -p "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit" -t "<your game name>.app/Contents/MacOS/<your game name>"**
+3. This will modify the Unity binary to load the CloudKit framework at startup.  
+	
+We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
+
 ## SIGN & PACKAGE
 ### GET YOUR TEAM NAME & TEAM ID 
 
@@ -28,18 +41,6 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 
 1. JOHN HOLEDIGGER (SKI9PF020A)
 2. JOHN THE HOLEDIGGER (SKI9PF020A)
-
-### BUILD WITH ICLOUD
-
-[TAKEN FROM Joel @Kittehface.com :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
-
-Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
-	 
-1. You need to use the third party tool [optool](https://github.com/alexzielenski/optool).
-2. Run the command **optool install -c load -p "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit" -t "<your game name>.app/Contents/MacOS/<your game name>"**
-3. This will modify the Unity binary to load the CloudKit framework at startup.  
-	
-We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
 
 ### RUN “SignAndPackage”
 1. When prompted type your team name
