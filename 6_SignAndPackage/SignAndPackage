@@ -171,7 +171,7 @@ if ! [ -z "$isEmpty" ]; then
   do
       if [ "$Replace" = "y" ]; then
           printf "Removing old build\n"
-          rm -r "$activePath/"*
+          rm -rf "$activePath/"*
           break
 
       elif [ "$Replace" = "n" ]; then
