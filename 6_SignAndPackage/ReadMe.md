@@ -129,7 +129,7 @@ In this order
 | [Codesign Manual](https://www.manpagez.com/man/1/codesign/) | Read up on all options|
 
 | SIGN TYPE | GOAL |
-|:--|:--|:--|
+|:--|:--|
 |--sign "appDir" Mac Developer: DEV NAME (TEAM_ID) | Development |
 |--sign "appDir" Developer ID Application: TEAM NAME (TEAM_ID) | Installer outside Appstore |
 |--sign "appDir" 3rd Party Mac Developer Application: TEAM NAME (TEAM_ID) | Appstore |
