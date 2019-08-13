@@ -112,8 +112,8 @@ When creating any installer make a duplicate of the correct provisioning profile
 #### WHAT TO SIGN?
 In this order
 
-- You sign all  **dylib** files
-- You sign all your **plugins**
+- You sign all **dylib** files
+- You sign all **.bunlde** files
 - You sign **your game**
 
 ###### EXAMPLE
