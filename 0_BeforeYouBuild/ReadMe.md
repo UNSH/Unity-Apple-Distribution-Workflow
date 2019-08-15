@@ -47,6 +47,8 @@ Enable any services such as (iCloud, Game Center, ...) you are going to use and 
 
 [QUOTE Joel @kittehface](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) *With iOS/tvOS being the flagship platforms, it probably makes more sense to create your primary App ID for them and have a secondary one for macOS.  But the secondary one will need to have a different name. Both App IDs will need to have the iCloud/CloudKit capability set.  Again, you can do all the primary work on the iOS/tvOS App ID.  If you're also doing your Unity game on those platforms, make a build there, have it generate the Xcode project, and use Xcode to turn on the iCloud capability and set up CloudKit.  It'll handle creating your default container (which will be named for the iOS/tvOS App ID).*
 
+When enabling iCloud support in an Identifier on the Apple developer website, make sure to also click the "edit" button to the right, and put a checkmark next to the iCloud container(s) your game will be using (if they aren't checked already).
+
 
 ### Create a new app in iTunes Connect
 Go to [iTunes connect](https://appstoreconnect.apple.com) and create a new (macOS) app.
