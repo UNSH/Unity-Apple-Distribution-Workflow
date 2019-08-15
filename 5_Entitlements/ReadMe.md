@@ -34,7 +34,7 @@ There is a separate folder with entitlements for the development build. By defau
 ### iCloud Development
 In the examples you can find other entitlements and an iCloud example to use it  just move the file from examples to Development and rename it to "entitlement.plist" Be sure to read the Readme of SignAndPackage because you will need to preform another step with optool.
 
-Depending on what you need you can bump into crashes when your app tries to access a specific service of function that requires entitlements. The crash report will tell you that an entitlement is needed. will need to adjust your [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) accordingly.
+Depending on what you need you can bump into crashes when your app tries to access a specific service of function that requires entitlements. The crash report will tell you that an entitlement is needed. will need to adjust your [entitlements](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5) accordingly.   
 
 #### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 
