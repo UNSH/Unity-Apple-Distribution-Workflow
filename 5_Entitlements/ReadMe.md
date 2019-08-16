@@ -1,8 +1,16 @@
 # Entitlements
-
+## WHY
+ [App sandboxing](https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html) is a security measure that Apple requires from all Appstore apps (which is why you always need this in your [entitlements](https://developer.apple.com/documentation/security/app_sandbox_entitlements)) Sandboxing restricts the privileges of an app so it cannot just open any directory on disk. 
+ 
+ When you sign your app you add privileges through the entitlements file that add these to a signature that describes what you will access and need (e.g read/write in specific folders, access to Pictures, online connections, camera use,...) Codesigning will use your provisioning profile together with these entitlements to create a signature. 
+ 
+ A consequence of this is that ***the information on your provisioning profile has to match to your entitlements***. Your provisioning profile is static in the sense that you download it from your Apple account. You create an app, an identity that describes your intent **AND** enable and set up the capabilities you want to use, after which you download this into a file that contains all this general information of your app. Then in your entitlements you describe again exactly what you access with added detail. So if you use iCloud: what the iCloud Drive containers are called, that you will read/write files, that you need online access, etc... 
+ 
+ Imagine you pass a checkpoint terminal on the airport. Your provisioning profile is your passport, your entitlements file is what you tell the customs officer. At the very least what's on your passport has to match what you tell the officer or you get rejected.
+   
 ## WHAT YOU NEED TO DO
 ### CREATE ENTITLEMENTS FILE
-Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typo's.*** 
+Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typos.*** 
 
 | DIR | 
 |:--|
@@ -11,7 +19,7 @@ Create an entitlements filed named "entitlements.plist" and place it in either D
 
 ### WHAT DO I PUT IN
 
-Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*.
+Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*
 
 * [Find more info on all keys here.](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5)
 * There are other examples in "5_Entitlements/Examples" folder to use as a reference.
@@ -40,11 +48,8 @@ Depending on what you need you can bump into crashes when your app tries to acce
 
 (However, in some cases, improper iCloud entitlements can instead crash on launch with a `Namespace CODESIGNING` error; so if you're seeing this error, double-check your entitlements and the capabilities of the Identifier used in your Provisioning Profile.)
 
-## WHY
-When you sign your code you need to add the correct entitlements, meaning you describe what you will access and need or in other words what the app can be expected to do. Codesign will use this information in the signature.  
+## MORE
 
-###### Examples
-connect to outside websites, use camera, access public folders like Pictures, … 
 
 [**QUOTE Matthias @ GentlyMad**](https://gentlymad.org/blog/post/deliver-mac-store-unity) (Entitlements file with only com.apple.security.app-sandbox.) This is the most basic .entitlements file with near zero capabilities. It worked for our app, because we didn’t need anything special. It might not work for you! If it doesn't work for you: Unity mentions the Unity Entitlements Tool to easily generate an .entitlements file but the link in the manual is broken. After some search: Here is the download link for the latest version . Luckily I didn't need to use it for our little app, so good luck to you! Make sure you read the guide! Save the file with the .entitlements ending, for convenience it should be located besides your .app package.
 

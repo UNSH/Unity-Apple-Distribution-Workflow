@@ -1,12 +1,23 @@
 # DISTRIBUTION
-
 ## GENERAL TROUBLESHOOTING
-#### INSTALLER
+### CODESIGN ERROR (files not signed)
+- Make sure you signed with the correct identity, have all certificates, correct profiles,... **read the previous chapters**
+- Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time **see SignAndPackage chapter**) 
+
+### CRASH (Entitlements, codesign)
+Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
+
+##### KNOWN EXAMPLES
+If your app opens and crashes when you access a capability like iCloud this means you made a mistake in describing iCloud in either Entitlements / provisioning profile ( and subsequently Dev Center)
+
+**Namespace CODESIGNING, Code 0x1**  In one case was related to the iCloud container key in entitlements not matching the used provisioning profile.
+
+### CANNOT FIND INSTALLATION
 When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
 
 [QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter: If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
 
-#### OTHER PROBLEMS
+### OTHER PROBLEMS
 Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
 
 **Location Log files** 
@@ -17,7 +28,7 @@ Note that the game will run in sandbox mode.  This means all of its files will b
 
 ### iCloud
 [**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
-*Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled, or CloudKit will not work.
+*Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled on your device, or CloudKit will not work.
 
 ## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains

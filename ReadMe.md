@@ -5,14 +5,12 @@ Workflow to automate and guide people in delivering Unity builds for macOS.
 
 We delivered builds to the Appstore using this script but beyond that it is possible that some things are not correct (e.g. iCloud, Building for outside the Appstore, ... ) Things also change often so if you notice a mistake don't hesitate to tell in the thread below.  
 
-[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) [ISSUE Link](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)
-
-
+[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) 
 
 ## BUGS  
 
 ### Unity 2018 Results in Apple rejection  
-There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
+There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed ([fixed in 2018.3 and up](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
 Fix from Giorgos
 
@@ -126,7 +124,8 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 | WHAT | WHO | HOME |
 |:--|:--|:--|
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
-|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
+|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) | 
+Corrections guide iCloud  | omgitsraven |[Home](https://github.com/omgitsraven|http://andrew.fraticelli.info/)|
 
  
 

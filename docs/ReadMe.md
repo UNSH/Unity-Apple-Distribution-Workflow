@@ -5,14 +5,12 @@ Workflow to automate and guide people in delivering Unity builds for macOS.
 
 We delivered builds to the Appstore using this script but beyond that it is possible that some things are not correct (e.g. iCloud, Building for outside the Appstore, ... ) Things also change often so if you notice a mistake don't hesitate to tell in the thread below.  
 
-[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) [ISSUE Link](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)
-
-
+[UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) 
 
 ## BUGS  
 
 ### Unity 2018 Results in Apple rejection  
-There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed (currently not fixed in 2018.2). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
+There seems to be a bug with Unity 2018 which will have your bundle rejected because of gamekit. So don't upgrade until this is fixed ([fixed in 2018.3 and up](https://issuetracker.unity3d.com/issues/apple-platforms-gamekit-reference-in-the-application-when-game-room-is-not-used-app-store-rejects-the-build?page=2#comments)). [Link to workaround by giorgos_gs](https://forum.unity.com/threads/app-links-against-the-gamekit-framework-reject-by-apple-reviewer.542306/#post-3577490)
 
 Fix from Giorgos
 
@@ -126,7 +124,8 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 | WHAT | WHO | HOME |
 |:--|:--|:--|
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
-|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) |
+|[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) | 
+Corrections guide iCloud  | omgitsraven |[Home](https://github.com/omgitsraven|http://andrew.fraticelli.info/)|
 
  
 
@@ -179,6 +178,8 @@ Enable any services such as (iCloud, Game Center, ...) you are going to use and 
 **iCloud** To create a single app that shares data through iCloud you always need to create separate App Identifiers for iOS/tvOS and macOS. And seeing that Unity builds with iOS can use Xcode it's easier to configure them on iOS.
 
 [QUOTE Joel @kittehface](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) *With iOS/tvOS being the flagship platforms, it probably makes more sense to create your primary App ID for them and have a secondary one for macOS.  But the secondary one will need to have a different name. Both App IDs will need to have the iCloud/CloudKit capability set.  Again, you can do all the primary work on the iOS/tvOS App ID.  If you're also doing your Unity game on those platforms, make a build there, have it generate the Xcode project, and use Xcode to turn on the iCloud capability and set up CloudKit.  It'll handle creating your default container (which will be named for the iOS/tvOS App ID).*
+
+When enabling iCloud support in an Identifier on the Apple developer website, make sure to also click the "edit" button to the right, and put a checkmark next to the iCloud container(s) your game will be using (if they aren't checked already).
 
 
 ### Create a new app in iTunes Connect
@@ -348,7 +349,6 @@ Currently the only 3 values of interest are:
 | KEY | VALUE | DESC|
 |:--|:--|:--|
 |App Uses Non-Exempt Encryption| **TRUE/FALSE** | "App is using encryption that is exempt from [EAR](https://www.bis.doc.gov/index.php/encryption-and-export-administration-regulations-ear)" **Before you scare read**  [Short answer](https://stackoverflow.com/a/46691541), [this for Unity](http://answers.unity.com/answers/669794/view.html), and [this by Unity](https://forum.unity.com/threads/us-export-compliance-encryption.389208/#post-2893835) |
-
 | LSMinimumSystemVersion | 10.XX.X | Limit OS [Version history](https://en.wikipedia.org/wiki/MacOS_version_history) |
 |GetInfoString | Copyright COMPANY 2022 | **The copyrights** to your game instead of Unity's |
 
@@ -413,10 +413,18 @@ According to [ Joel @Kittehface.com ] (http://www.kittehface.com/2019/06/unity-g
 
 
 # Entitlements
-
+## WHY
+ [App sandboxing](https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html) is a security measure that Apple requires from all Appstore apps (which is why you always need this in your [entitlements](https://developer.apple.com/documentation/security/app_sandbox_entitlements)) Sandboxing restricts the privileges of an app so it cannot just open any directory on disk. 
+ 
+ When you sign your app you add privileges through the entitlements file that add these to a signature that describes what you will access and need (e.g read/write in specific folders, access to Pictures, online connections, camera use,...) Codesigning will use your provisioning profile together with these entitlements to create a signature. 
+ 
+ A consequence of this is that ***the information on your provisioning profile has to match to your entitlements***. Your provisioning profile is static in the sense that you download it from your Apple account. You create an app, an identity that describes your intent **AND** enable and set up the capabilities you want to use, after which you download this into a file that contains all this general information of your app. Then in your entitlements you describe again exactly what you access with added detail. So if you use iCloud: what the iCloud Drive containers are called, that you will read/write files, that you need online access, etc... 
+ 
+ Imagine you pass a checkpoint terminal on the airport. Your provisioning profile is your passport, your entitlements file is what you tell the customs officer. At the very least what's on your passport has to match what you tell the officer or you get rejected.
+   
 ## WHAT YOU NEED TO DO
 ### CREATE ENTITLEMENTS FILE
-Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typo's.*** 
+Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typos.*** 
 
 | DIR | 
 |:--|
@@ -425,7 +433,7 @@ Create an entitlements filed named "entitlements.plist" and place it in either D
 
 ### WHAT DO I PUT IN
 
-Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*.
+Change it and basically describe what your app will need. At the very least it always needs *com.apple.security.app-sandbox set to yes*
 
 * [Find more info on all keys here.](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW5)
 * There are other examples in "5_Entitlements/Examples" folder to use as a reference.
@@ -440,7 +448,7 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.security.network.client | **YES** | If accessing things online |
 | com.apple.developer.aps-environment | **development** | Development build *WITH* Services |
 | com.apple.developer.icloud-container-identifiers | **CloudKit** | iCloud |
-| com.apple.developer.icloud-services | **your container identifier** | iCloud |
+| com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
 
 ## DEVELOPMENT BUILDS
 There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
@@ -452,11 +460,10 @@ Depending on what you need you can bump into crashes when your app tries to acce
 
 #### CREDIT FOR THIS UPDATE [**"Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
 
-## WHY
-When you sign your code you need to add the correct entitlements, meaning you describe what you will access and need or in other words what the app can be expected to do. Codesign will use this information in the signature.  
+(However, in some cases, improper iCloud entitlements can instead crash on launch with a `Namespace CODESIGNING` error; so if you're seeing this error, double-check your entitlements and the capabilities of the Identifier used in your Provisioning Profile.)
 
-###### Examples
-connect to outside websites, use camera, access public folders like Pictures, … 
+## MORE
+
 
 [**QUOTE Matthias @ GentlyMad**](https://gentlymad.org/blog/post/deliver-mac-store-unity) (Entitlements file with only com.apple.security.app-sandbox.) This is the most basic .entitlements file with near zero capabilities. It worked for our app, because we didn’t need anything special. It might not work for you! If it doesn't work for you: Unity mentions the Unity Entitlements Tool to easily generate an .entitlements file but the link in the manual is broken. After some search: Here is the download link for the latest version . Luckily I didn't need to use it for our little app, so good luck to you! Make sure you read the guide! Save the file with the .entitlements ending, for convenience it should be located besides your .app package.
 
@@ -470,6 +477,22 @@ To cover Game-Center you have to manually add the following entitlements in your
 ## DIY Entitlements
 Create your entitlements file and place it in the same folder as your build. You could place it anywhere you just have to reference the correct folder when you call codesign in the terminal.
 # Sign, package build & Deliver
+### WHY SIGN LAST
+Making any adjustment to your build after you signing it is like opening a sealed letter. So everytime you changed something you need to reapply the seal.
+
+## BUILD WITH ICLOUD? (&Prime31?)
+First before signing you have to edit the Unity binary following this step from Kittehface (If you already signed then sign again after this step) You have to sign last because this step will modify your build which will subsequently invalidate your signing.
+
+[TAKEN FROM Joel @Kittehface.com :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
+
+Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
+	 
+1. You need to use the third party tool [optool](https://github.com/alexzielenski/optool).
+2. Run the command **optool install -c load -p "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit" -t "<your game name>.app/Contents/MacOS/<your game name>"**
+3. This will modify the Unity binary to load the CloudKit framework at startup.  
+	
+We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
+
 ## SIGN & PACKAGE
 ### GET YOUR TEAM NAME & TEAM ID 
 
@@ -499,18 +522,6 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 
 1. JOHN HOLEDIGGER (SKI9PF020A)
 2. JOHN THE HOLEDIGGER (SKI9PF020A)
-
-### BUILD WITH ICLOUD
-
-[TAKEN FROM Joel @Kittehface.com :](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) 
-
-Modify the Unity executable to link the CloudKit framework. Following from the eppz! blog
-	 
-1. You need to use the third party tool [optool](https://github.com/alexzielenski/optool).
-2. Run the command **optool install -c load -p "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit" -t "<your game name>.app/Contents/MacOS/<your game name>"**
-3. This will modify the Unity binary to load the CloudKit framework at startup.  
-	
-We found that without this - even though the CloudKit framework is linked in the Prime31 plugin - actual calls to CloudKit will fail with the error "connection to service names com.apple.cloudd was invalidated".
 
 ### RUN “SignAndPackage”
 1. When prompted type your team name
@@ -562,6 +573,8 @@ Depending on your choice between appstore, dev or outside the  correct provision
 |all  files in **appDir/Contents/Plugins/** | .bundle |
 |YOUR_BUILD | .app |
 
+If your code signing fails with the error "your app is not signed at all" look for missed dylibs in the response and sign them to.
+
 If your build is rejected because of unsigned files you will probably need to do this and codesign with --deep, but when we send a build to the App Store I'll adjust this readme. 
 
 ### Verify signed bundle
@@ -577,8 +590,8 @@ When creating any installer make a duplicate of the correct provisioning profile
 #### WHAT TO SIGN?
 In this order
 
-- You sign all  **dylib** files
-- You sign all your **plugins**
+- You sign all **dylib** files
+- You sign all **.bunlde** files
 - You sign **your game**
 
 ###### EXAMPLE
@@ -597,7 +610,7 @@ In this order
 | [Codesign Manual](https://www.manpagez.com/man/1/codesign/) | Read up on all options|
 
 | SIGN TYPE | GOAL |
-|:--|:--|:--|
+|:--|:--|
 |--sign "appDir" Mac Developer: DEV NAME (TEAM_ID) | Development |
 |--sign "appDir" Developer ID Application: TEAM NAME (TEAM_ID) | Installer outside Appstore |
 |--sign "appDir" 3rd Party Mac Developer Application: TEAM NAME (TEAM_ID) | Appstore |
@@ -629,14 +642,25 @@ In this order
 	productbuild --component “$appDir” “/Applications” --sign "Developer ID Installer: TEAMNAME (TEAM_ID)" "$appName.pkg
 
 # DISTRIBUTION
-
 ## GENERAL TROUBLESHOOTING
-#### INSTALLER
+### CODESIGN ERROR (files not signed)
+- Make sure you signed with the correct identity, have all certificates, correct profiles,... **read the previous chapters**
+- Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time **see SignAndPackage chapter**) 
+
+### CRASH (Entitlements, codesign)
+Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
+
+##### KNOWN EXAMPLES
+If your app opens and crashes when you access a capability like iCloud this means you made a mistake in describing iCloud in either Entitlements / provisioning profile ( and subsequently Dev Center)
+
+**Namespace CODESIGNING, Code 0x1**  In one case was related to the iCloud container key in entitlements not matching the used provisioning profile.
+
+### CANNOT FIND INSTALLATION
 When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
 
 [QUOTE Mark-ffrench](https://forum.unity.com/threads/how-to-open-mac-build-file-after-code-sign.454435/#post-2954548) Installing the pkg file should, in theory, install the app in the /Applications folder. However, there are a couple of other possible issues that you might encounter: If OSX already thinks you have a copy of your app anywhere on your mac, it will install your new version over it. This could be anywhere on your hard drive, so make sure that the app you are trying to run after installation is the one that has actually been updated by the installer. Your best bet is to try track down all copies of your app and delete them.
 
-#### OTHER PROBLEMS
+### OTHER PROBLEMS
 Open your game and check the logs (**Applications > Utilities > Console**) for errors and use that as reference to Google yourself out.
 
 **Location Log files** 
@@ -647,7 +671,7 @@ Note that the game will run in sandbox mode.  This means all of its files will b
 
 ### iCloud
 [**QUOTE "Joel @ Kitteh Face"**](http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html)
-*Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled, or CloudKit will not work.
+*Sign into iCloud on your test Mac.  Make sure you have iCloud Drive enabled on your device, or CloudKit will not work.
 
 ## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
