@@ -54,8 +54,8 @@ do
 				echo " "
 				sed -i "" "$pluginLineNumber"'s,.*, '"$MyBundleIdentifier"',' "$PluginInfoPlist"
 			else
-				"No Info.plist found in this bundle..."
-				break  
+				echo "No Info.plist found in $bundle. "
+				echo " "
 			fi
 		done
         break
