@@ -24,6 +24,11 @@ echo " "
 
 chmod -R a+xr "$appDir"
 
+echo "Differences in Info.plist file:"
+echo
+diff "$appDir/Contents/Info.plist" "Info.plist"
+echo
+echo "Replacing in build"
 echo "DONE! Info.plist copied to $appDir/Contents/Info.plist "
 cp "Info.plist" "$appDir/Contents/Info.plist"
 echo " "
