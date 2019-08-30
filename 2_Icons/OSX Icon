@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# parse arguments
+while getopts "hqt:i:" opt; do
+    case "$opt" in
+    h)
+        echo "usage:"
+        echo "  -h:    help"
+        echo "  -q:    quiet mode – delete icon images clutter without asking"
+        echo
+        exit 0
+        ;;
+    q)
+        QUIET=1
+        ;;
+    esac
+done
+
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
@@ -173,12 +190,19 @@ else
     fi
 
     echo " "
-    printf '\e[1m'
-    echo " "
-    echo "DONE! Delete icon images clutter? (y/n)"
-    printf '\e[0m'
+    if [ "$QUIET" == 1 ]; then
+        removeFiles="y"
+        echo "Deleting icon images clutter!"
+        echo " "
+    else
+        printf '\e[1m'
+        echo " "
+        echo "DONE! Delete icon images clutter? (y/n)"
+        printf '\e[0m'
+        read -r removeFiles
+    fi
 
-    while read -r removeFiles
+    while true
     do
         if [ "$removeFiles" = "y" ]; then
              rm -R MyIcon.iconset
@@ -192,6 +216,7 @@ else
             break
         else
             echo "Wrong input"
+            read -r removeFiles
         fi
     done
 
