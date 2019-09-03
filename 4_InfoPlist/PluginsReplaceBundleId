@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# parse arguments
+while getopts "hqt:i:" opt; do
+    case "$opt" in
+    h)
+        echo "usage:"
+        echo "  -h:    help"
+        echo "  -q:    quiet mode – skip confirmation"
+        echo
+        exit 0
+        ;;
+    q)
+        QUIET=1
+        ;;
+    esac
+done
+
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
@@ -33,11 +50,18 @@ MyBundleIdentifier=$( sed "${LineNumberMyBundleIdentifiere}q;d" "Info.plist" )
 
 echo " "
 echo "Will replace BundleIdentifiers in YOUR_BUILD/Contents/Plugins/YOUR_PLUGIN_BUNDLES/Info.plist with yours"
-printf '\e[1m'
-echo "Continue? (y/n)"
-printf '\e[0m'
 
-while read -r ChangePlugins
+# skip confirmation if the quiet option is supplied
+if [ "$QUIET" == 1 ]; then
+    ChangePlugins="y"
+else
+    printf '\e[1m'
+    echo "Continue? (y/n)"
+    printf '\e[0m'
+    read -r ChangePlugins
+fi
+
+while true
 do
     if [ "$ChangePlugins" = "y" ]; then
 		for bundle in $(find "$appDir/Contents/Plugins" -name '*.bundle')
@@ -54,8 +78,8 @@ do
 				echo " "
 				sed -i "" "$pluginLineNumber"'s,.*, '"$MyBundleIdentifier"',' "$PluginInfoPlist"
 			else
-				"No Info.plist found in this bundle..."
-				break  
+				echo "No Info.plist found in $bundle. "
+				echo " "
 			fi
 		done
         break
@@ -65,6 +89,7 @@ do
         break
     else
         echo "Wrong input"
+        read -r ChangePlugins
     fi
 done
 echo "DONE!"

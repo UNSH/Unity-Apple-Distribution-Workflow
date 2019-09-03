@@ -1,5 +1,38 @@
 #!/bin/bash
 
+# parse arguments
+while getopts "hqt:i:s:" opt; do
+    case "$opt" in
+    h)
+        echo "usage:"
+        echo "  -h:          help"
+        echo "  -q:          quiet mode – skip confirmations, delete icon images clutter"
+        echo "  -t target:   Build target – one of(dev|appstore|installer|zip)"
+        echo "  -i identity: Developer/Team name and id (in quotes) e.g. 'MY COMPANY (FKJLDLKFDG)'"
+        echo "  -s signmode: Codesign with --deep? One of (deep|shallow)"
+        echo
+        exit 0
+        ;;
+    q)
+        QUIET=1
+        QUIET_OPT="-q"
+        OVERWRITE_OPT="-f"
+        ;;
+    t)
+        BUILD_TARGET=$OPTARG
+        ;;
+    i)
+        IDENTITY=$OPTARG
+        ;;
+    s)
+        SIGN_MODE=$OPTARG
+        ;;
+    esac
+done
+
+echo $TARGET_OPT $IDENTITY_OPT
+
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
@@ -9,34 +42,41 @@ SCRIPT_3="4_InfoPlist/CopyPlist"
 SCRIPT_3A="4_InfoPlist/PluginsReplaceBundleId"
 SCRIPT_4="6_SignAndPackage/SignAndPackage"
 
-echo " "
-echo "+-----------------------------------------------------------------------------+"
-echo "|                    UPDATE YOUR BUILD WITH CURRENT VALUES ?                  |"
-echo "+-----------------------------------------------------------------------------+"
-echo " "
-echo "Use this if you have to repeat the process or put everything where it's supposed to. If you are note sure check the readme"
-echo " "
-printf '\e[1m'
-echo -e "\033[5mDO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS\033[0m"
+# skip confirmation if the quiet option is supplied
+if [ "$QUIET" = 1 ]; then
+    cont="y"
+else
+    echo " "
+    echo "+-----------------------------------------------------------------------------+"
+    echo "|                    UPDATE YOUR BUILD WITH CURRENT VALUES ?                  |"
+    echo "+-----------------------------------------------------------------------------+"
+    echo " "
+    echo "Use this if you have to repeat the process or put everything where it's supposed to. If you are note sure check the readme"
+    echo " "
+    printf '\e[1m'
+    echo -e "\033[5mDO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS\033[0m"
 
-printf '\e[1miCloud requires more steps, please read the readme\n\n'
-echo "Continue? (y/n)"
+    printf '\e[1miCloud requires more steps, please read the readme\n\n'
+    echo "Continue? (y/n)"
+    read -r cont
+fi
 
-while read -r cont
+while true
 do
     if [ "$cont" = "y" ]; then
         printf '\e[0m'
-        bash "$SCRIPT_1"
+        bash "$SCRIPT_1" $QUIET_OPT
         bash "$SCRIPT_2"
         bash "$SCRIPT_3"
-        bash "$SCRIPT_3A"
-        bash "$SCRIPT_4"
+        bash "$SCRIPT_3A" $QUIET_OPT
+        bash "$SCRIPT_4" $OVERWRITE_OPT -t "$BUILD_TARGET" -i "$IDENTITY" -s "$SIGN_MODE"
         break
     elif [ "$cont" = "n" ]; then
         exit 0
         break
     else
         echo "Wrong input"
+        read -r cont
     fi
 done
 

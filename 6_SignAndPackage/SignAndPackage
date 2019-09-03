@@ -1,5 +1,34 @@
 #!/bin/bash
 
+# parse arguments
+while getopts "hft:i:s:" opt; do
+    case "$opt" in
+    h)
+        echo "usage:"
+        echo "  -h:          Help"
+        echo "  -f:          Force overwrite of build if existing"
+        echo "  -t target:   Build target – one of (dev|appstore|installer|zip)"
+        echo "  -i identity: Developer/team name and id (in quotes) e.g. 'MY COMPANY (FKJLDLKFDG)'"
+        echo "  -s signmode: Codesign with --deep? One of (deep|shallow)"
+        echo
+        exit 0
+        ;;
+    f)
+        FORCE_OVERWRITE=1
+        ;;
+    t)
+        BUILD_FOR=$OPTARG
+        ;;
+    i)
+        DEVNAME=$OPTARG
+        ;;
+    s)
+        SIGN_MODE=$OPTARG
+        ;;
+    esac
+done
+
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
@@ -74,10 +103,13 @@ pathAppstore="$pathCurrentBuild/Appstore"
 ######################## PROMPT - PROVISIONING PROFILE - MK FOLDER ##############################
 ################################################################################################
 
-printf "\e[1mCreate a build for Appstore Develompent (Testing), Appstore Distribution or Distribution outside the Appstore ?\e[0m"
-printf "\nEnter without quotes : 'dev', 'appstore', 'installer' or 'zip' \e[1m \n"
+if [ -z "$BUILD_FOR" ]; then
+    printf "\e[1mCreate a build for Appstore Develompent (Testing), Appstore Distribution or Distribution outside the Appstore ?\e[0m"
+    printf "\nEnter without quotes : 'dev', 'appstore', 'installer' or 'zip' \e[1m \n"
+    read -r BUILD_FOR
+fi
 
-while read -r BUILD_FOR
+while true
 do
     if [ "$BUILD_FOR" = "dev" ]; then
         if [ -z "$APPSTORE_DEV_ProfileDir" ]; then
@@ -156,6 +188,7 @@ do
 
     else
         echo "Wrong input"
+        read -r BUILD_FOR
     fi
 done
 
@@ -166,8 +199,15 @@ done
 isEmpty=`find "$activePath" -name "*$appName.*" -maxdepth 1 -print`
 
 if ! [ -z "$isEmpty" ]; then
-  printf "\n\e[1m\nFile found in destination! ( $activePath ) \n\nOverwrite? (y/n)\n\e[0m\n"
-  while read -r Replace
+  printf "\n\e[1m\nFile found in destination! ( $activePath )\n\e[0m"
+  if [ "$FORCE_OVERWRITE" = 1 ]; then
+      Replace="y"
+  else
+      echo "Overwrite? (y/n)"
+      read -r Replace
+  fi
+  
+  while true
   do
       if [ "$Replace" = "y" ]; then
           printf "Removing old build\n"
@@ -180,6 +220,7 @@ if ! [ -z "$isEmpty" ]; then
           break
       else
           echo "Wrong input"
+          read -r Replace
       fi
   done
 fi
@@ -205,7 +246,10 @@ fi
 ######################## TEAM ID ###############################################################
 ################################################################################################
 
-if [ "$BUILD_FOR" = "dev" ] ; then
+if [ ! -z "$DEVNAME" ] ; then
+    echo "Using identity [$DEVNAME]"
+
+elif [ "$BUILD_FOR" = "dev" ] ; then
     
     printf "\nDeveloper name and id? \n\e[0mExample format, without quotes:'JOHN THE BLANKER (FKJLDLKFDG)' \n\e[1m "
     read DEVNAME
@@ -254,12 +298,21 @@ else
       # codesign --entitlements "$locationEntitlements" --deep --force --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
       codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
   done
+  
   printf "\n SIGN APP\n" 
-  printf "\n Codesign with --deep (no preserves metadata on bundles & dylibs)? (y/n) \n"
+  if [ "$SIGN_MODE" = "deep" ]; then
+      DeepSign="y"
+  elif [ "$SIGN_MODE" = "shallow" ]; then
+      DeepSign="n"
+  else
+      printf "\n Codesign with --deep (no preserves metadata on bundles & dylibs)? (y/n) \n"
+      read -r DeepSign
+  fi
 
-  while read -r DeepSign
+  while true
   do
       if [ "$DeepSign" = "y" ]; then
+          echo "Signing with --deep"
           codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display  --timestamp --options=runtime  --sign "$signature" "$appDir"
           break
       elif [ "$DeepSign" = "n" ]; then
@@ -276,6 +329,7 @@ else
           break
       else
           echo "Wrong input"
+          read -r DeepSign
       fi
   done
 fi
