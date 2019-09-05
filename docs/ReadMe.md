@@ -92,6 +92,13 @@ Self explanatory.
 ### RepeatForUpdatedBuild
 Script that calls all the other scripts to speed up preparing updates and creating new builds. 
 
+When you need to run the script over and over again, or you want to automate this process for future builds, call `./PluginsReplaceBundleId -h` to see automation options.
+Here is an example of a fully automated process:
+
+	./RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep
+
+The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Application Loader.
+
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
 
@@ -117,6 +124,7 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 | JoeStrout | [POST BUILD,SIGN, ZIP](https://forum.unity.com/threads/osx-code-signing.455830/) | [Stroutandsons.com](http://stroutandsons.com) |
 | Henry | [ICON GEN](https://stackoverflow.com/a/20703594) |..|
 | TranslucentCloud | [PIXEL GRID](https://stackoverflow.com/a/39678276) |..|
+| Jeremy Statz | [CONTROLLER SUPPORT](http://www.kittehface.com/2019/08/controller-usage-in-signed-macos-game.html) | [Kittehface.com](http://www.kittehface.com) |
 
 ### WORKFLOW
 Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
@@ -126,6 +134,7 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
 |[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) | 
 Corrections guide iCloud  | omgitsraven |[Home](https://github.com/omgitsraven|http://andrew.fraticelli.info/)|
+| Build automation | v01pe | [brokenrul.es](http://brokenrul.es)
 
  
 
@@ -293,6 +302,7 @@ Either use this icon as a base or:
 4. From that iconset it will create an PlayerIcon.icns file.
 5. Create a UnityPlayerIcon.png in correct size (64x64)
 6. Copy both “UnityPlayerIcon.png” and “PlayerIcon.icns” to *“1_MyBuild/YOUR.APP/Contents/Resources”* and replace what unity made.
+7. For automation features call `./OSX\ Icon -h`
 
 #### Problem 
 On High Sierra there is no way to create an icns file that includes all 10 required sizes through icon util (Everything but 16X16@1x and 32x32@1x). The only way to do this is to run this script on an older OS. I believe I did it with Sierra. You can open .ICNS files with preview to double check. I am not sure if this is a problem though. I have read not all are necessary. But if you are obsessive on details like me there is no other way. Believe me I have tried it all. Nothing worked besides running the IconUtil on an older OS.
@@ -381,6 +391,9 @@ Save the Info.plist inside your package and don’t forget to create a copy sinc
 ## PluginsReplaceBundleId
 ### What it does
 Takes the Info.plist you just made and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
+
+For automation features call `./PluginsReplaceBundleId -h`
+
 ### Why
 Even the Unity services bundles need your BundleIdentifier, otherwise you will get errors when uploading to the Appstore.
 
@@ -449,6 +462,8 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.aps-environment | **development** | Development build *WITH* Services |
 | com.apple.developer.icloud-container-identifiers | **CloudKit** | iCloud |
 | com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
+| com.apple.security.device.bluetooth | **YES** | When using controllers |
+| com.apple.security.device.usb | **YES** | When using controllers |
 
 ## DEVELOPMENT BUILDS
 There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
@@ -473,6 +488,10 @@ Depending on what you need you can bump into crashes when your app tries to acce
 [**QUOTE Zwilnik**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 You’ll need the App Sandbox entitlement (set to YES) and if you’re accessing anything on the internet, you’ll need com.apple.security.network.client set to YES too
 To cover Game-Center you have to manually add the following entitlements in your entitlements file (normally Xcode would handle this for you..) com.apple.application-identifier & com.apple.developer.team-identifier
+
+[**QUOTE Jeremy @ Kitteh Face**](http://www.kittehface.com/2019/08/controller-usage-in-signed-macos-game.html)
+\[…\] once your app is signed it's trapped in a sandbox environment, and the only light filters through gaps provided by those entitlements.
+In the case of a gamepad, we're talking either USB (wired) or Bluetooth (wireless).
 
 ## DIY Entitlements
 Create your entitlements file and place it in the same folder as your build. You could place it anywhere you just have to reference the correct folder when you call codesign in the terminal.
@@ -527,12 +546,14 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 1. When prompted type your team name
 2. When prompted enter : dev, appstore, installer,zip
 
-| INPUT | WILL CREATE PACKAGE FOR | AT |
-|:--|:--|:--|
-| dev | Development | 7_Distribution/VERSION/Development |
-| appstore| Appstore | 7_Distribution/VERSION/Appstore/ |
-| installer | Distribute outside Appstore | 7_Distribution/VERSION/Installer/ |
-| zip | Distribute outside Appstore | 7_Distribution/VERSION/Zip/ |
+	| INPUT | WILL CREATE PACKAGE FOR | AT |
+	|:--|:--|:--|
+	| dev | Development | 7_Distribution/VERSION/Development |
+	| appstore| Appstore | 7_Distribution/VERSION/Appstore/ |
+	| installer | Distribute outside Appstore | 7_Distribution/VERSION/Installer/ |
+	| zip | Distribute outside Appstore | 7_Distribution/VERSION/Zip/ |
+
+3. For automation features call `./SignAndPackage -h`
 
 **IMPORTANT** if signing is successful and you have signed for the first time you will be prompted to add “codesign” to your keychain. **Always allow**
 
