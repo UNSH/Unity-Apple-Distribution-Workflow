@@ -117,6 +117,7 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 | JoeStrout | [POST BUILD,SIGN, ZIP](https://forum.unity.com/threads/osx-code-signing.455830/) | [Stroutandsons.com](http://stroutandsons.com) |
 | Henry | [ICON GEN](https://stackoverflow.com/a/20703594) |..|
 | TranslucentCloud | [PIXEL GRID](https://stackoverflow.com/a/39678276) |..|
+| Jeremy Statz | [CONTROLLER SUPPORT](http://www.kittehface.com/2019/08/controller-usage-in-signed-macos-game.html) | [Kittehface.com](http://www.kittehface.com) |
 
 ### WORKFLOW
 Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
