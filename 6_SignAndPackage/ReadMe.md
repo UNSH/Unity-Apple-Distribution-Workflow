@@ -49,12 +49,14 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 1. When prompted type your team name
 2. When prompted enter : dev, appstore, installer,zip
 
-| INPUT | WILL CREATE PACKAGE FOR | AT |
-|:--|:--|:--|
-| dev | Development | 7_Distribution/VERSION/Development |
-| appstore| Appstore | 7_Distribution/VERSION/Appstore/ |
-| installer | Distribute outside Appstore | 7_Distribution/VERSION/Installer/ |
-| zip | Distribute outside Appstore | 7_Distribution/VERSION/Zip/ |
+	| INPUT | WILL CREATE PACKAGE FOR | AT |
+	|:--|:--|:--|
+	| dev | Development | 7_Distribution/VERSION/Development |
+	| appstore| Appstore | 7_Distribution/VERSION/Appstore/ |
+	| installer | Distribute outside Appstore | 7_Distribution/VERSION/Installer/ |
+	| zip | Distribute outside Appstore | 7_Distribution/VERSION/Zip/ |
+
+3. For automation features call `./SignAndPackage -h`
 
 **IMPORTANT** if signing is successful and you have signed for the first time you will be prompted to add “codesign” to your keychain. **Always allow**
 
