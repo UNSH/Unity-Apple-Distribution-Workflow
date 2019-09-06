@@ -95,6 +95,9 @@ Script that calls all the other scripts to speed up preparing updates and creati
 When you need to run the script over and over again, or you want to automate this process for future builds, call `./PluginsReplaceBundleId -h` to see automation options.
 Here is an example of a fully automated process:
 
+**ATTENTION: This is no shortcut to set up the steps by hand!<br/>
+DO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS**
+
 	./RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep
 
 The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Application Loader.
