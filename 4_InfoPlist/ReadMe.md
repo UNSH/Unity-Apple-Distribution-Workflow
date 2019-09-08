@@ -39,6 +39,9 @@ Save the Info.plist inside your package and don’t forget to create a copy sinc
 ## PluginsReplaceBundleId
 ### What it does
 Takes the Info.plist you just made and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
+
+For automation features call `./PluginsReplaceBundleId -h`
+
 ### Why
 Even the Unity services bundles need your BundleIdentifier, otherwise you will get errors when uploading to the Appstore.
 

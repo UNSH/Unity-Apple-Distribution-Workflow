@@ -35,6 +35,8 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.aps-environment | **development** | Development build *WITH* Services |
 | com.apple.developer.icloud-container-identifiers | **CloudKit** | iCloud |
 | com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
+| com.apple.security.device.bluetooth | **YES** | When using controllers |
+| com.apple.security.device.usb | **YES** | When using controllers |
 
 ## DEVELOPMENT BUILDS
 There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
@@ -59,6 +61,10 @@ Depending on what you need you can bump into crashes when your app tries to acce
 [**QUOTE Zwilnik**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
 You’ll need the App Sandbox entitlement (set to YES) and if you’re accessing anything on the internet, you’ll need com.apple.security.network.client set to YES too
 To cover Game-Center you have to manually add the following entitlements in your entitlements file (normally Xcode would handle this for you..) com.apple.application-identifier & com.apple.developer.team-identifier
+
+[**QUOTE Jeremy @ Kitteh Face**](http://www.kittehface.com/2019/08/controller-usage-in-signed-macos-game.html)
+\[…\] once your app is signed it's trapped in a sandbox environment, and the only light filters through gaps provided by those entitlements.
+In the case of a gamepad, we're talking either USB (wired) or Bluetooth (wireless).
 
 ## DIY Entitlements
 Create your entitlements file and place it in the same folder as your build. You could place it anywhere you just have to reference the correct folder when you call codesign in the terminal.

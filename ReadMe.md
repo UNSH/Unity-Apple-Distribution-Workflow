@@ -92,6 +92,16 @@ Self explanatory.
 ### RepeatForUpdatedBuild
 Script that calls all the other scripts to speed up preparing updates and creating new builds. 
 
+When you need to run the script over and over again, or you want to automate this process for future builds, call `./PluginsReplaceBundleId -h` to see automation options.
+Here is an example of a fully automated process:
+
+**ATTENTION: This is no shortcut to set up the steps by hand!<br/>
+DO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS**
+
+	./RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep
+
+The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Application Loader.
+
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
 
@@ -117,6 +127,7 @@ There are tools out there like [Signed](https://assetstore.unity.com/packages/to
 | JoeStrout | [POST BUILD,SIGN, ZIP](https://forum.unity.com/threads/osx-code-signing.455830/) | [Stroutandsons.com](http://stroutandsons.com) |
 | Henry | [ICON GEN](https://stackoverflow.com/a/20703594) |..|
 | TranslucentCloud | [PIXEL GRID](https://stackoverflow.com/a/39678276) |..|
+| Jeremy Statz | [CONTROLLER SUPPORT](http://www.kittehface.com/2019/08/controller-usage-in-signed-macos-game.html) | [Kittehface.com](http://www.kittehface.com) |
 
 ### WORKFLOW
 Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadmeIntoDoc*" to recompile all readme's for the online manual page.
@@ -126,6 +137,7 @@ Worked on this workflow? Add yourself! Btw you can use the *"doc/CombineAllReadm
 | ORGINAL WORKFLOW | UNSH | [UNSH.IO](https://unsh.io) |
 |[Post](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213) | Atorisa | [Assets](https://assetstore.unity.com/publishers/17426) | 
 Corrections guide iCloud  | omgitsraven |[Home](https://github.com/omgitsraven|http://andrew.fraticelli.info/)|
+| Build automation | v01pe | [brokenrul.es](http://brokenrul.es)
 
  
 

@@ -8,8 +8,11 @@ while getopts "hqt:i:s:" opt; do
         echo "  -h:          help"
         echo "  -q:          quiet mode – skip confirmations, delete icon images clutter"
         echo "  -t target:   Build target – one of(dev|appstore|installer|zip)"
-        echo "  -i identity: Developer/Team name and id (in quotes) e.g. 'MY COMPANY (FKJLDLKFDG)'"
+        echo "  -i identity: Developer or team name and id (in quotes)"
+        echo "               e.g. 'TEAM NAME (XXXXXXXXXX)' or 'YOUR NAME (XXXXXXXXXX)'"
         echo "  -s signmode: Codesign with --deep? One of (deep|shallow)"
+        echo
+        echo "  Example: RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep"
         echo
         exit 0
         ;;

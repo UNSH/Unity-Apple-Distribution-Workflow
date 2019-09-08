@@ -8,7 +8,8 @@ while getopts "hft:i:s:" opt; do
         echo "  -h:          Help"
         echo "  -f:          Force overwrite of build if existing"
         echo "  -t target:   Build target – one of (dev|appstore|installer|zip)"
-        echo "  -i identity: Developer/team name and id (in quotes) e.g. 'MY COMPANY (FKJLDLKFDG)'"
+        echo "  -i identity: Developer or team name and id (in quotes)"
+        echo "               e.g. 'TEAM NAME (XXXXXXXXXX)' or 'YOUR NAME (XXXXXXXXXX)'"
         echo "  -s signmode: Codesign with --deep? One of (deep|shallow)"
         echo
         exit 0
