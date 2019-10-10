@@ -283,21 +283,29 @@ printf "\n\nBUNDLES & DYLIBS\n"
 
 if [ "$BUILD_FOR" = "dev" ] ; then
 
-  # for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
-  for bundle in $(find "$appDir/Contents" -name "*.bundle") $(find "$appDir/Contents" -name "*.dylib"); 
-  do
-        codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"  
+  find "$appDir/Contents" -name "*.bundle" -print0 | 
+  while IFS= read -r -d '' bundle; do
+      codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle" 
   done
+
+  find "$appDir/Contents" -name "*.dylib" -print0 | 
+  while IFS= read -r -d '' dylibs; do
+      codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dylibs" 
+  done
+ 
   printf "\n SIGN APP\n" 
   codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "$signature" "$appDir"
 
 else 
 
-  # for bundle in $(find "$appDir/Contents/Plugins" -name "*.bundle") $(find "$appDir/Contents/Frameworks" -name "*.dylib"); 
-  for bundle in $(find "$appDir/Contents" -name "*.bundle") $(find "$appDir/Contents" -name "*.dylib"); 
-  do
-      # codesign --entitlements "$locationEntitlements" --deep --force --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
+  find "$appDir/Contents" -name "*.bundle" -print0 | 
+  while IFS= read -r -d '' bundle; do
       codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
+  done
+
+  find "$appDir/Contents" -name "*.dylib" -print0 | 
+  while IFS= read -r -d '' dylibs; do
+      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dylibs"
   done
   
   printf "\n SIGN APP\n" 
