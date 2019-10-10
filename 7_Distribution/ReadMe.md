@@ -59,7 +59,7 @@ After filling in the form, you will also need to spend some time to take screens
 **IMPORTANT** Once you upload your build for review with your screenshots, those screenshots are stuck. Meaning you need to upload a new build to replace the previous screenshots.
 
 ### Use application loader to send your app to Apple.
-**XCODE11** Application loader has been removed from Xcode 11 so either download a newer version [here](https://developer.apple.com/download/more/?name=Xcode) Or download [application Loader 3.0 here](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
+**XCODE11** Application loader has been removed from Xcode 11 so either download an older version [here](https://developer.apple.com/download/more/?name=Xcode) Or download [application Loader 3.0 here](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 To use the old Application loader you need to generate an APP-SPECIFIC PASSWORD [at Apple here] (https://appleid.apple.com/account/manage) and give this password when prompted.
 
