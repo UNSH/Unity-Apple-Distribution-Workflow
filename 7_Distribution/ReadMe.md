@@ -59,9 +59,15 @@ After filling in the form, you will also need to spend some time to take screens
 **IMPORTANT** Once you upload your build for review with your screenshots, those screenshots are stuck. Meaning you need to upload a new build to replace the previous screenshots.
 
 ### Use application loader to send your app to Apple.
+**XCODE11** Application loader has been removed from Xcode 11 so either download a newer version [here](https://developer.apple.com/download/more/?name=Xcode) Or download [application Loader 3.0 here](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
+
+To use the old Application loader you need to generate an APP-SPECIFIC PASSWORD [at Apple here] (https://appleid.apple.com/account/manage) and give this password when prompted.
+
+**CREDIT** [Link](https://forums.xamarin.com/discussion/170085/xcode-11-and-upload-ipa-file-without-application-loader)
+
+DEPRICATED 
 In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader. 
 
-[Dilmer Valecillos told of a problem](https://www.dilmergames.com/blog/2017/03/29/unity3d-how-deliver-application-apple-mac-store/) with newer versions of Application Loader, but we didn't have this problem. The opposite actually, we weren't able to open application loader 3 getting this error: *"To use this application, you must first sign in to Itunes Connect and sign the relevant contracts."* Which we couldn't fix, but we could just do it with Xcode's default Application loader. [Though if you need it: Download link application Loader 3.0](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 ### Check if your build got through. 
 Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
