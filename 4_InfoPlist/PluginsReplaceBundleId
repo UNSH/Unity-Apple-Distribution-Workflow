@@ -64,13 +64,13 @@ fi
 while true
 do
     if [ "$ChangePlugins" = "y" ]; then
-		for bundle in $(find "$appDir/Contents/Plugins" -name '*.bundle')
+		for bundle in "$(find "$appDir/Contents/Plugins" -name '*.bundle')"
 		do
 			PluginInfoPlist=`find "$bundle/Contents" -name "Info.plist" -print -maxdepth 1`
 			
 			if ! [ -z "$PluginInfoPlist" ]; then
 
-				pluginLineNumber=$(sed -n '/CFBundleIdentifier/=' $PluginInfoPlist)
+				pluginLineNumber=$(sed -n '/CFBundleIdentifier/=' "$PluginInfoPlist")
 				pluginLineNumber="$(($pluginLineNumber + 1))"    
 				echo " "
 				echo "MyBundleIdentifier found in $bundle. "
