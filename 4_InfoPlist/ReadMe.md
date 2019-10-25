@@ -47,9 +47,6 @@ Even the Unity services bundles need your BundleIdentifier, otherwise you will g
 
 [QUOTE N3uRo](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/) Edit other "*.bundle"s Info.plist that has a "CFBundleIdentifier" to point to your identifier also. I had a problem with AVPro that had it's own identifier that was not valid.
 
-### Why not
-According to [ Joel @Kittehface.com ] (http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) replacing the Info.plists is not neccesary, but it hasn't been tested with a Distribution build that passed a review yet.
-
 ## DIY Info.plist
 1. Adjust the above values in your YOUR_BUILD/Contents/Info.plist
 2. (MAYBE) So open YOUR_BUILD/Contents/Plugins/each_bundle/Info.Plist And replace the BundleIdentifier with yours.
