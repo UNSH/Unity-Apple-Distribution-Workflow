@@ -37,7 +37,7 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
 | com.apple.security.device.bluetooth | **YES** | When using controllers |
 | com.apple.security.device.usb | **YES** | When using controllers |
-| com.apple.security.cs.allow-unsigned-executable-memory | **YES** | IAP |
+| com.apple.security.cs.allow-unsigned-executable-memory | **YES** | IAP & MONO |
 | com.apple.security.cs.allow-dyld-environment-variables | **YES** | STEAM |
 | com.apple.security.cs.disable-library-validation | **YES** | STEAM |
 
