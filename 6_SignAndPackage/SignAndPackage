@@ -229,7 +229,7 @@ fi
 #################################################################################################
 ######################## ENTITLEMENTS ##########################################################
 ################################################################################################
-printf "\n\n ENTITLEMENTS \n\n"
+printf "\n\n ENTITLEMENTS \n"
 
 if [ "$BUILD_FOR" = "dev" ]; then
 
@@ -245,7 +245,7 @@ if [ -z "$locationEntitlements" ]; then
     exit 0
 fi
 
-printf "\n\n Entitlements taken from $locationEntitlements\n\n"
+printf "Entitlements taken from $locationEntitlements\n\n"
 
 #################################################################################################
 ######################## TEAM ID ###############################################################
@@ -285,16 +285,21 @@ fi
  
 printf "\n\nBUNDLES & DYLIBS\n"  
 
-if [ "$BUILD_FOR" = "dev" ] ; then
-
-  find "$appDir/Contents" -name "*.bundle" -print0 | 
+if [ "$BUILD_FOR" = "dev" ] || [ "$BUILD_FOR" = "appstore" ]; then
+  
+  find "$appDir/Contents/Plugins" -name "*.bundle" -print0 | 
   while IFS= read -r -d '' bundle; do
-      codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle" 
+      codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$bundle"
   done
 
-  find "$appDir/Contents" -name "*.dylib" -print0 | 
+  find "$appDir/Contents/Plugins" -name "*.so" -print0 | 
+  while IFS= read -r -d '' bundle; do
+      codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$bundle"
+  done
+
+  find "$appDir/Contents/Frameworks" -name "*.dylib" -print0 | 
   while IFS= read -r -d '' dylibs; do
-      codesign --deep --force --verbose=4 --display --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dylibs" 
+      codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$dylibs"
   done
  
   printf "\n SIGN APP\n" 
@@ -302,41 +307,55 @@ if [ "$BUILD_FOR" = "dev" ] ; then
 
 else 
 
-  find "$appDir/Contents" -name "*.bundle" -print0 | 
+  find "$appDir/Contents/Plugins" -name "*.bundle" -print0 | 
   while IFS= read -r -d '' bundle; do
-      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$bundle"
+      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$bundle"
   done
 
-  find "$appDir/Contents" -name "*.dylib" -print0 | 
+  find "$appDir/Contents/Plugins" -name "*.so" -print0 | 
+  while IFS= read -r -d '' bundle; do
+      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$bundle"
+  done
+
+  find "$appDir/Contents/Frameworks" -name "*.dylib" -print0 | 
   while IFS= read -r -d '' dylibs; do
-      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" --preserve-metadata=identifier,entitlements,flags "$dylibs"
+      codesign --deep --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$dylibs"
   done
   
-  printf "\n SIGN APP\n" 
-  if [ "$SIGN_MODE" = "deep" ]; then
-      DeepSign="y"
-  elif [ "$SIGN_MODE" = "shallow" ]; then
-      DeepSign="n"
-  else
-      printf "\n Codesign with --deep (no preserves metadata on bundles & dylibs)? (y/n) \n"
-      read -r DeepSign
-  fi
-
-  while true
-  do
-      if [ "$DeepSign" = "y" ]; then
-          echo "Signing with --deep"
-          codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display  --timestamp --options=runtime  --sign "$signature" "$appDir"
-          break
-      elif [ "$DeepSign" = "n" ]; then
-          codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$appDir"
-          break
-      else
-          echo "Wrong input"
-          read -r DeepSign
-      fi
-  done
 fi
+
+printf "\n SIGN APP\n" 
+if [ "$SIGN_MODE" = "deep" ]; then
+    DeepSign="y"
+elif [ "$SIGN_MODE" = "shallow" ]; then
+    DeepSign="n"
+else
+    printf "\n Codesign with --deep (no preserves metadata on bundles & dylibs)? (y/n) \n"
+    read -r DeepSign
+fi
+
+while true
+do
+    if [ "$DeepSign" = "y" ]; then
+        echo "Signing with --deep"
+        if [ "$BUILD_FOR" = "dev" ] || [ "$BUILD_FOR" = "appstore" ]; then
+          codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display --sign "$signature" "$appDir"
+        else
+          codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display  --timestamp --options=runtime --sign "$signature" "$appDir"
+        fi
+        break
+    elif [ "$DeepSign" = "n" ]; then
+        if [ "$BUILD_FOR" = "dev" ] || [ "$BUILD_FOR" = "appstore" ]; then
+          codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --sign "$signature" "$appDir"
+        else
+          codesign --entitlements "$locationEntitlements" --force --verbose=4 --display  --timestamp --options=runtime --sign "$signature" "$appDir"
+        fi
+        break
+    else
+        echo "Wrong input"
+        read -r DeepSign
+    fi
+done
 
 #################################################################################################
 ########################  VERIFY  ##############################################################
@@ -354,17 +373,19 @@ codesign -dv --verbose=4 "$appDir"
 printf "\n\nBuilding Package ... \n------------------------------------------------------------------- \n"
 
 if [ "$BUILD_FOR" = "dev" ]; then
-  cp -r "$appDir" "$activePath"
   productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer:" "$appName.pkg"
-  mv "$appName.pkg" "$activePath"  
-  printf "Testing build in ../7_Distribution/$FolderVersionName/Development\n"
+  mv "$appName.pkg" "$activePath"
+  cp -r "$appDir" "$activePath"
+  
+  printf "\n\n\n Testing build in ../7_Distribution/$FolderVersionName/Development\n"
+  printf "\n\n\n Testing PKG in ../7_Distribution/$FolderVersionName/Development\n"
 
 elif [ "$BUILD_FOR" = "zip" ]; then    
     # cd $appDir
     cd "$appDir"
     cd ..
     zip -r "$activePath/$appName.zip" "$appfile"
-    echo "Zip ready to go in  in ../7_Distribution/$FolderVersionName/Zip"         
+    printf "\n\n\n Zip ready to go in  in ../7_Distribution/$FolderVersionName/Zip"         
 
 elif [ "$BUILD_FOR" = "installer" ]; then  
     printf "\n \e[0mBuilding installer pkg : \n$activePath/$appName.pkg\n"     
@@ -376,9 +397,11 @@ else
   mv "$appName.pkg" "$activePath"
 fi
 
-printf "\n\n VERIFY PKG \n ------------------------------------------------------------------- \n"
-pkgutil --check-signature "$activePath/$appName.pkg"
+if ! [ "$BUILD_FOR" = "zip" ]; then
+  printf "\n\n VERIFY PKG \n ------------------------------------------------------------------- \n"
+  pkgutil --check-signature "$activePath/$appName.pkg"
+fi
 
-printf "\n\n\n\n Remember to delete installing the pkg will write over any other build it finds \n ------------------------------------------------------------------- \n"
+printf "\n\n\n\n Remember to delete old builds before installing a .pkg It will write over any other build it finds \n --------------------------------------------------------------------------------------------- \n"
 
 exit 0

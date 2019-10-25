@@ -79,7 +79,7 @@ Copies your manually updated Info.plist from *"4_InfoPlist/"* to *"BUILD/Content
 ### PluginsReplaceBundleId
 Takes the adjusted Info.plist and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
 
-### Entitlements.plist templates
+### Entitlements templates
 Self explanatory.
 
 ### SignAndPackage
@@ -157,12 +157,17 @@ If you do not already have one go to [Apple Developer portal](https://developer.
 **SELLING ON APPSTORE?** If you are not releasing a free app/game and want to get paid outside of the US. Go fix the banking and tax first at [Appstore Connect](https://appstoreconnect.apple.com) >> Agreements, Tax and banking. It's not necessarily something that has to happen now, but get it over with if you are about to release. Prepare for some serious legal and tax lingo.
 
 ### Create the Certificates you need
-Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names](https://stackoverflow.com/a/13603031)
+Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names here](https://stackoverflow.com/a/13603031) [And here](https://stackoverflow.com/questions/29039462/which-certificate-should-i-use-to-sign-my-mac-os-x-application/49015213) [What happens when you use the wrong here](https://stackoverflow.com/questions/21295255/productsigned-mac-app-not-installing-in-computers-that-are-not-mine)
 
-**IMPORTANT** In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
-
+##### INSTALLING CERTIFICATES
+In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
 
 **IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have used old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
+
+When your certificates are installed on the keychain test to double check with the terminal and the command below. Problems? [read this guide for troubleshooting.] (https://medium.com/@ceyhunkeklik/how-to-fix-ios-application-code-signing-error-4818bd331327) [or this] (https://apple.stackexchange.com/questions/196238/identity-not-found-when-trying-to-code-sign-an-application-with-a-certificate) Note on our build the Mac Installer Distribution did not show up but worked.
+
+  security find-identity -vp codesigning
+
 
 #### DEVELOPMENT
 | CERTIFICATE NAME | DESC |
@@ -211,7 +216,7 @@ The type of provisioning profile depends on your selling platform (in -or Outsid
 
 Go to the [Apple developer portal](https://developer.apple.com/account/mac/profile/). Just follow the instructions, if you have more problems follow [this tutorial](https://help.apple.com/developer-account/#/devf2eb157f8). Also **give a clear name to your profiles** when you download them so you do not make mistakes later. 
 
-#### REGISTER YOU MAC DEVICES 
+#### REGISTER YOUR MAC DEVICES 
 If this is the first time you will be asked to add a device and give the UUID of this device you can find this here: About this Mac > System Report > Hardware overview (Hardware UUID: XXXXXXXXX) Also you will need to include all test devices in a development profile so if you need to add more devices do this now.
 
 **IMPORTANT** Make sure you have set up all services such as iCloud before downloading your profiles.
@@ -402,9 +407,6 @@ Even the Unity services bundles need your BundleIdentifier, otherwise you will g
 
 [QUOTE N3uRo](https://forum.unity.com/threads/the-nightmare-of-submitting-to-app-store-steps-included-dec-2016.444107/) Edit other "*.bundle"s Info.plist that has a "CFBundleIdentifier" to point to your identifier also. I had a problem with AVPro that had it's own identifier that was not valid.
 
-### Why not
-According to [ Joel @Kittehface.com ] (http://www.kittehface.com/2019/06/unity-games-using-cloudkit-on-macos-part1.html) replacing the Info.plists is not neccesary, but it hasn't been tested with a Distribution build that passed a review yet.
-
 ## DIY Info.plist
 1. Adjust the above values in your YOUR_BUILD/Contents/Info.plist
 2. (MAYBE) So open YOUR_BUILD/Contents/Plugins/each_bundle/Info.Plist And replace the BundleIdentifier with yours.
@@ -440,12 +442,12 @@ According to [ Joel @Kittehface.com ] (http://www.kittehface.com/2019/06/unity-g
    
 ## WHAT YOU NEED TO DO
 ### CREATE ENTITLEMENTS FILE
-Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typos.*** 
+Create an entitlements filed named "My.entitlements" and place it in either Development or Distribution depending on your needs. ***Again open this My.entitlements with XCode not in text editor to avoid typos.*** 
 
 | DIR | 
 |:--|
-|/5_Entitlements/Distribution/entitlements.plist|
-|/5_Entitlements/Development/entitlements.plist|
+|/5_Entitlements/Distribution/MyDist.entitlements|
+|/5_Entitlements/Development/MyDev.entitlements|
 
 ### WHAT DO I PUT IN
 
@@ -458,7 +460,7 @@ Change it and basically describe what your app will need. At the very least it a
 
 | KEY | VALUE  | WHEN NEEDED |
 |:--|:--|:--|
-|com.apple.security.app-sandbox| **YES**| Always |
+|com.apple.security.app-sandbox| **YES**| Always - Delete for STEAM |
 | com.apple.application-identifier |**TeamID.COM.COMPANY.GAME**  | Always |
 | com.apple.developer.team-identifier | **TeamID**  | Always |
 | com.apple.security.network.client | **YES** | If accessing things online |
@@ -467,9 +469,23 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
 | com.apple.security.device.bluetooth | **YES** | When using controllers |
 | com.apple.security.device.usb | **YES** | When using controllers |
+| com.apple.security.cs.allow-unsigned-executable-memory | **YES** | IAP & MONO |
+| com.apple.security.cs.allow-dyld-environment-variables | **YES** | STEAM |
+| com.apple.security.cs.disable-library-validation | **YES** | STEAM |
 
 ## DEVELOPMENT BUILDS
 There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
+
+#### QUOTE [**"Hidden Jason"**](https://forum.unity.com/threads/notarizing-osx-builds.588904/#post-5071199)
+A note on entitlements when notarizing for those who might be running into problems, especially when dealing with Steam:
+
+Mono (which you have to use if you're also using UnityIAP right now) requires: com.apple.security.cs.allow-unsigned-executable-memory
+
+Steam's API requires:
+*do not* inlclude com.apple.security.app-sandbox
+include com.apple.security.cs.allow-dyld-environment-variables
+include com.apple.security.cs.disable-library-validation
+Without that set of entitlements, SteamAPI_Init will fail (return false) when running a notarized+stapled app bundle on macOS 10.14.
 
 ### iCloud Development
 In the examples you can find other entitlements and an iCloud example to use it  just move the file from examples to Development and rename it to "entitlement.plist" Be sure to read the Readme of SignAndPackage because you will need to preform another step with optool.
@@ -567,7 +583,7 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 3. If you get the error "No identity found" make sure you installed the correct certificate in your keychain
 
 ### NOTARISATION
-Based on [this post](https://forum.unity.com/threads/notarizing-osx-builds.588904/) notarisation requires the **--timestamp** & -**-options=runtime** code sign options. We have not released a build with notarisation so will report back when we know more. Both have been included in all distribution code signs.
+Based on [this post](https://forum.unity.com/threads/notarizing-osx-builds.588904/) notarisation requires the **--timestamp** & -**-options=runtime** code sign options. ***Runtime will be REQUIRED the first of January****. We have not released a build with notarisation [but there is a full guide by dpid here](https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4). 
 
 - [Apple Notarisation General info](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution) 
 - [Apple Notarisation code sign troubleshooting](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/resolving_common_notarization_issues)
@@ -595,9 +611,10 @@ Depending on your choice between appstore, dev or outside the  correct provision
 |:--| :-- |
 |all  files in **appDir/Contents/Frameworks/** | .dylib |
 |all  files in **appDir/Contents/Plugins/** | .bundle |
+|all  files in **appDir/Contents/Plugins/** | .so |
 |YOUR_BUILD | .app |
 
-If your code signing fails with the error "your app is not signed at all" look for missed dylibs in the response and sign them to.
+If your code signing fails with the error "your app is not signed at all" look for missed dylibs or plugins in the response and sign them to.
 
 If your build is rejected because of unsigned files you will probably need to do this and codesign with --deep, but when we send a build to the App Store I'll adjust this readme. 
 
@@ -645,15 +662,10 @@ In this order
 
 ### OUTSIDE APPSTORE
 
-	codesign --entitlements "DIR_Entitlements" --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
+	codesign --entitlements "DIR_Entitlements" --timestamp --options=runtime --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
 
 ### DEVELOPMENT BUILD
-###### DYLIB & BUNDLES (Sign without entitlements)
-
-	codesign --sign "Mac Developer: DEV NAME (TEAM_ID)" --preserve-metadata=identifier,entitlements,flags "appDir"
-
-###### YOUR.APP (Sign WITH entitlements)
-
+	
 	codesign --entitlements "DIR_Entitlements" --sign "Mac Developer: DEV NAME (DEV_ID)" "appDir"
 
 ### BUILD PACKAGE TERMINAL 
@@ -668,16 +680,25 @@ In this order
 # DISTRIBUTION
 ## GENERAL TROUBLESHOOTING
 ### CODESIGN ERROR (files not signed)
-- Make sure you signed with the correct identity, have all certificates, correct profiles,... **read the previous chapters**
-- Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time **see SignAndPackage chapter**) 
+- Make sure you signed with the correct identity, have all certificates, correct profiles,... 
+	- **read the previous chapters** 
+	- check with terminal if all identities are present in keychain
+	- Check if all plugins & libraries were signed. The code looks for .dylib .plugin .so anything else will not get signed. Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time ) 
+	- double check signatures after codesign
+	- Download your provisioning profiles again
 
 ### CRASH (Entitlements, codesign)
-Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
+- Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
 
 ##### KNOWN EXAMPLES
 If your app opens and crashes when you access a capability like iCloud this means you made a mistake in describing iCloud in either Entitlements / provisioning profile ( and subsequently Dev Center)
 
-**Namespace CODESIGNING, Code 0x1**  In one case was related to the iCloud container key in entitlements not matching the used provisioning profile.
+**Namespace CODESIGNING, Code 0x1**  
+DEVELOPMENT BUILDS
+Check the iCloud container key in entitlements not matching the used provisioning profile or other features not matching between provisioning profile & iCloud.
+
+APPSTORE BUILDS
+You are not allowed to open your builds until they get approved for the Appstore. Tools like sctl will also return rejected. 
 
 ### CANNOT FIND INSTALLATION
 When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
@@ -700,6 +721,11 @@ Note that the game will run in sandbox mode.  This means all of its files will b
 ## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
+
+### Notarisation
+We have no experience with Notarisation so [follow this guide for notarisation by dpid](https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4)
+
+**25/10/19** [BUT Read these tests before moving forward] (https://forum.unity.com/threads/hardened-runtime-for-notarization.766262/)
 
 ## APPSTORE
 ### Testing your build
