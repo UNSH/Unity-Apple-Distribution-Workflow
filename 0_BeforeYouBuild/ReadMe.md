@@ -13,12 +13,17 @@ If you do not already have one go to [Apple Developer portal](https://developer.
 **SELLING ON APPSTORE?** If you are not releasing a free app/game and want to get paid outside of the US. Go fix the banking and tax first at [Appstore Connect](https://appstoreconnect.apple.com) >> Agreements, Tax and banking. It's not necessarily something that has to happen now, but get it over with if you are about to release. Prepare for some serious legal and tax lingo.
 
 ### Create the Certificates you need
-Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names](https://stackoverflow.com/a/13603031)
+Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names here](https://stackoverflow.com/a/13603031) [And here](https://stackoverflow.com/questions/29039462/which-certificate-should-i-use-to-sign-my-mac-os-x-application/49015213) [What happens when you use the wrong here](https://stackoverflow.com/questions/21295255/productsigned-mac-app-not-installing-in-computers-that-are-not-mine)
 
-**IMPORTANT** In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
-
+##### INSTALLING CERTIFICATES
+In the creation process the field "common name" will name your keychain. Make sure you name your certificates in a way you can recognise them later. Its not a disaster if you don't but it does make your keychain a bit more clear if problems arise later. So for example "TEAM_Mac Installer Distribution". 
 
 **IMPORTANT** Always make sure you use the correct certificates and provisioning profiles. If you have used old certificates (and provisioning profiles) you will need to download these again from the member center. **CREDIT** [Atorisa](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/#post-3604213)
+
+When your certificates are installed on the keychain test to double check with the terminal and the command below. Problems? [read this guide for troubleshooting.] (https://medium.com/@ceyhunkeklik/how-to-fix-ios-application-code-signing-error-4818bd331327) [or this] (https://apple.stackexchange.com/questions/196238/identity-not-found-when-trying-to-code-sign-an-application-with-a-certificate) Note on our build the Mac Installer Distribution did not show up but worked.
+
+  security find-identity -vp codesigning
+
 
 #### DEVELOPMENT
 | CERTIFICATE NAME | DESC |
@@ -67,7 +72,7 @@ The type of provisioning profile depends on your selling platform (in -or Outsid
 
 Go to the [Apple developer portal](https://developer.apple.com/account/mac/profile/). Just follow the instructions, if you have more problems follow [this tutorial](https://help.apple.com/developer-account/#/devf2eb157f8). Also **give a clear name to your profiles** when you download them so you do not make mistakes later. 
 
-#### REGISTER YOU MAC DEVICES 
+#### REGISTER YOUR MAC DEVICES 
 If this is the first time you will be asked to add a device and give the UUID of this device you can find this here: About this Mac > System Report > Hardware overview (Hardware UUID: XXXXXXXXX) Also you will need to include all test devices in a development profile so if you need to add more devices do this now.
 
 **IMPORTANT** Make sure you have set up all services such as iCloud before downloading your profiles.
