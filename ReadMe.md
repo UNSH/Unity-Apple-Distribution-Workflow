@@ -79,7 +79,7 @@ Copies your manually updated Info.plist from *"4_InfoPlist/"* to *"BUILD/Content
 ### PluginsReplaceBundleId
 Takes the adjusted Info.plist and finds your BundleIdentifier. Opens all bundles in the plugins folder and replaces the BundleIdentifier value with yours.
 
-### Entitlements.plist templates
+### Entitlements templates
 Self explanatory.
 
 ### SignAndPackage
