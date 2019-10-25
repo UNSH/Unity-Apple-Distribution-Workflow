@@ -10,12 +10,12 @@
    
 ## WHAT YOU NEED TO DO
 ### CREATE ENTITLEMENTS FILE
-Create an entitlements filed named "entitlements.plist" and place it in either Development or Distribution depending on your needs. ***Again open this entitlements.plist with XCode not in text editor to avoid typos.*** 
+Create an entitlements filed named "My.entitlements" and place it in either Development or Distribution depending on your needs. ***Again open this My.entitlements with XCode not in text editor to avoid typos.*** 
 
 | DIR | 
 |:--|
-|/5_Entitlements/Distribution/entitlements.plist|
-|/5_Entitlements/Development/entitlements.plist|
+|/5_Entitlements/Distribution/MyDist.entitlements|
+|/5_Entitlements/Development/MyDev.entitlements|
 
 ### WHAT DO I PUT IN
 
@@ -28,7 +28,7 @@ Change it and basically describe what your app will need. At the very least it a
 
 | KEY | VALUE  | WHEN NEEDED |
 |:--|:--|:--|
-|com.apple.security.app-sandbox| **YES**| Always |
+|com.apple.security.app-sandbox| **YES**| Always - Delete for STEAM |
 | com.apple.application-identifier |**TeamID.COM.COMPANY.GAME**  | Always |
 | com.apple.developer.team-identifier | **TeamID**  | Always |
 | com.apple.security.network.client | **YES** | If accessing things online |
@@ -37,9 +37,23 @@ Change it and basically describe what your app will need. At the very least it a
 | com.apple.developer.icloud-services | **your container identifiers** (the Enabled iCloud Containers in the Capabilities of the Identifier used in your Provisioning Profile, likely in the form  **iCloud.COM.COMPANY.GAME**) | iCloud |
 | com.apple.security.device.bluetooth | **YES** | When using controllers |
 | com.apple.security.device.usb | **YES** | When using controllers |
+| com.apple.security.cs.allow-unsigned-executable-memory | **YES** | IAP |
+| com.apple.security.cs.allow-dyld-environment-variables | **YES** | STEAM |
+| com.apple.security.cs.disable-library-validation | **YES** | STEAM |
 
 ## DEVELOPMENT BUILDS
 There is a separate folder with entitlements for the development build. By default it's an entitlements file with only com.apple.security.app-sandbox	set to YES. 
+
+#### QUOTE [**"Hidden Jason"**](https://forum.unity.com/threads/notarizing-osx-builds.588904/#post-5071199)
+A note on entitlements when notarizing for those who might be running into problems, especially when dealing with Steam:
+
+Mono (which you have to use if you're also using UnityIAP right now) requires: com.apple.security.cs.allow-unsigned-executable-memory
+
+Steam's API requires:
+*do not* inlclude com.apple.security.app-sandbox
+include com.apple.security.cs.allow-dyld-environment-variables
+include com.apple.security.cs.disable-library-validation
+Without that set of entitlements, SteamAPI_Init will fail (return false) when running a notarized+stapled app bundle on macOS 10.14.
 
 ### iCloud Development
 In the examples you can find other entitlements and an iCloud example to use it  just move the file from examples to Development and rename it to "entitlement.plist" Be sure to read the Readme of SignAndPackage because you will need to preform another step with optool.

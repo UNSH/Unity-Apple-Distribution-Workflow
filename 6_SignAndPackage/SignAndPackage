@@ -229,12 +229,13 @@ fi
 #################################################################################################
 ######################## ENTITLEMENTS ##########################################################
 ################################################################################################
+printf "\n\n ENTITLEMENTS \n\n"
 
 if [ "$BUILD_FOR" = "dev" ]; then
 
-      locationEntitlements=`find "../5_Entitlements/Development" -name "entitlements.plist" -maxdepth 1`
+      locationEntitlements=`find "../5_Entitlements/Development" -name "*.entitlements" -maxdepth 1`
 else 
-      locationEntitlements=`find "../5_Entitlements/Distribution" -name "entitlements.plist" -maxdepth 1`
+      locationEntitlements=`find "../5_Entitlements/Distribution" -name "*.entitlements" -maxdepth 1`
 fi
 
 if [ -z "$locationEntitlements" ]; then
@@ -243,6 +244,9 @@ if [ -z "$locationEntitlements" ]; then
     echo "Place entitlements.plist in '5_Entitlements/' folder \n \e[0m"     
     exit 0
 fi
+
+printf "\n\n Entitlements taken from $locationEntitlements\n\n"
+
 #################################################################################################
 ######################## TEAM ID ###############################################################
 ################################################################################################
@@ -325,15 +329,6 @@ else
           codesign --entitlements "$locationEntitlements" --deep --force --verbose=4 --display  --timestamp --options=runtime  --sign "$signature" "$appDir"
           break
       elif [ "$DeepSign" = "n" ]; then
-          
-          # for file in $(find "$appDir/Contents" -type f  -not -path "*bundle*" ! -name "*.dylib") ; 
-          # do
-          #   if ! [[ "$file" = "default" ]] || [[ "$file" = "resources" ]]; then
-
-          #       codesign --entitlements "$locationEntitlements" --force  --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$file"
-          #   fi
-          # done
-
           codesign --entitlements "$locationEntitlements" --force --verbose=4 --display --timestamp --options=runtime --sign "$signature" "$appDir"
           break
       else
@@ -360,6 +355,8 @@ printf "\n\nBuilding Package ... \n---------------------------------------------
 
 if [ "$BUILD_FOR" = "dev" ]; then
   cp -r "$appDir" "$activePath"
+  productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer:" "$appName.pkg"
+  mv "$appName.pkg" "$activePath"  
   printf "Testing build in ../7_Distribution/$FolderVersionName/Development\n"
 
 elif [ "$BUILD_FOR" = "zip" ]; then    
@@ -378,5 +375,10 @@ else
   productbuild --component "$appDir" "/Applications" --sign "3rd Party Mac Developer Installer: $DEVNAME" "$appName.pkg"
   mv "$appName.pkg" "$activePath"
 fi
+
+printf "\n\n VERIFY PKG \n ------------------------------------------------------------------- \n"
+pkgutil --check-signature "$activePath/$appName.pkg"
+
+printf "\n\n\n\n Remember to delete installing the pkg will write over any other build it finds \n ------------------------------------------------------------------- \n"
 
 exit 0
