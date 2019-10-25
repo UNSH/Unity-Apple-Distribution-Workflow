@@ -67,7 +67,7 @@ To sign your testing builds you need a personal name and id. Note that the ID is
 3. If you get the error "No identity found" make sure you installed the correct certificate in your keychain
 
 ### NOTARISATION
-Based on [this post](https://forum.unity.com/threads/notarizing-osx-builds.588904/) notarisation requires the **--timestamp** & -**-options=runtime** code sign options. We have not released a build with notarisation so will report back when we know more. Both have been included in all distribution code signs.
+Based on [this post](https://forum.unity.com/threads/notarizing-osx-builds.588904/) notarisation requires the **--timestamp** & -**-options=runtime** code sign options. ***Runtime will be REQUIRED the first of January****. We have not released a build with notarisation [but there is a full guide by dpid here](https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4). 
 
 - [Apple Notarisation General info](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution) 
 - [Apple Notarisation code sign troubleshooting](https://developer.apple.com/documentation/security/notarizing_your_app_before_distribution/resolving_common_notarization_issues)
@@ -95,9 +95,10 @@ Depending on your choice between appstore, dev or outside the  correct provision
 |:--| :-- |
 |all  files in **appDir/Contents/Frameworks/** | .dylib |
 |all  files in **appDir/Contents/Plugins/** | .bundle |
+|all  files in **appDir/Contents/Plugins/** | .so |
 |YOUR_BUILD | .app |
 
-If your code signing fails with the error "your app is not signed at all" look for missed dylibs in the response and sign them to.
+If your code signing fails with the error "your app is not signed at all" look for missed dylibs or plugins in the response and sign them to.
 
 If your build is rejected because of unsigned files you will probably need to do this and codesign with --deep, but when we send a build to the App Store I'll adjust this readme. 
 
@@ -145,15 +146,10 @@ In this order
 
 ### OUTSIDE APPSTORE
 
-	codesign --entitlements "DIR_Entitlements" --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
+	codesign --entitlements "DIR_Entitlements" --timestamp --options=runtime --sign "Developer ID Application: TEAM NAME (TEAM_ID)" "appDir"
 
 ### DEVELOPMENT BUILD
-###### DYLIB & BUNDLES (Sign without entitlements)
-
-	codesign --sign "Mac Developer: DEV NAME (TEAM_ID)" --preserve-metadata=identifier,entitlements,flags "appDir"
-
-###### YOUR.APP (Sign WITH entitlements)
-
+	
 	codesign --entitlements "DIR_Entitlements" --sign "Mac Developer: DEV NAME (DEV_ID)" "appDir"
 
 ### BUILD PACKAGE TERMINAL 
