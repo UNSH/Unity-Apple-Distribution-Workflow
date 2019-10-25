@@ -1,16 +1,25 @@
 # DISTRIBUTION
 ## GENERAL TROUBLESHOOTING
 ### CODESIGN ERROR (files not signed)
-- Make sure you signed with the correct identity, have all certificates, correct profiles,... **read the previous chapters**
-- Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time **see SignAndPackage chapter**) 
+- Make sure you signed with the correct identity, have all certificates, correct profiles,... 
+	- **read the previous chapters** 
+	- check with terminal if all identities are present in keychain
+	- Check if all plugins & libraries were signed. The code looks for .dylib .plugin .so anything else will not get signed. Error concerning specific files not. being signed, then you should sign them manually (Unfortunately things change all the time ) 
+	- double check signatures after codesign
+	- Download your provisioning profiles again
 
 ### CRASH (Entitlements, codesign)
-Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
+- Generally crashes concerning entitlements mean that you did not correctly set up either your provisioning profile or your entitlements. Make sure that your provisioning profile is downloaded **BEFORE** all capabilities were **FULLY** set up at Apple Dev center. Then double check to make sure your entitlements match the information on your provisioning profile. 
 
 ##### KNOWN EXAMPLES
 If your app opens and crashes when you access a capability like iCloud this means you made a mistake in describing iCloud in either Entitlements / provisioning profile ( and subsequently Dev Center)
 
-**Namespace CODESIGNING, Code 0x1**  In one case was related to the iCloud container key in entitlements not matching the used provisioning profile.
+**Namespace CODESIGNING, Code 0x1**  
+DEVELOPMENT BUILDS
+Check the iCloud container key in entitlements not matching the used provisioning profile or other features not matching between provisioning profile & iCloud.
+
+APPSTORE BUILDS
+You are not allowed to open your builds until they get approved for the Appstore. Tools like sctl will also return rejected. 
 
 ### CANNOT FIND INSTALLATION
 When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
@@ -33,6 +42,11 @@ Note that the game will run in sandbox mode.  This means all of its files will b
 ## DEVELOPER ID - INDEPENDENT DISTRIBUTION 
 ### Open your app and see if gatekeeper complains
 If you cannot open your build it's possible you forgot to uncheck "Mac Appstore validation" in the player settings when you made your Unity build.
+
+### Notarisation
+We have no experience with Notarisation so [follow this guide for notarisation by dpid](https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4)
+
+**25/10/19** [BUT Read these tests before moving forward] (https://forum.unity.com/threads/hardened-runtime-for-notarization.766262/)
 
 ## APPSTORE
 ### Testing your build
