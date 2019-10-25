@@ -19,7 +19,7 @@ DEVELOPMENT BUILDS
 Check the iCloud container key in entitlements not matching the used provisioning profile or other features not matching between provisioning profile & iCloud.
 
 APPSTORE BUILDS
-You are not allowed to open your builds until they get approved for the Appstore. Tools like sctl will also return rejected. 
+You are not allowed to open your builds until they get approved for the Appstore. Tools like spctl will also return rejected. [Read more](https://developer.apple.com/library/archive/qa/qa1884/_index.html#//apple_ref/doc/uid/DTS40015141) 
 
 ### CANNOT FIND INSTALLATION
 When Installing the installer will default to the directory of your build. e.g. /1_MyBuild/App and not the application folder. This is because there can only be one installed copy of your final product so if you cannot find your new installation, start by checking if "/1_MyBuild/YOUR.app" was replaced with your install. If so either test the application from here or if you want your testing build in the applications folder, delete your build before installing your final pkg.   
