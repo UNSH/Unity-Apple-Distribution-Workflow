@@ -13,6 +13,9 @@ If you do not already have one go to [Apple Developer portal](https://developer.
 **SELLING ON APPSTORE?** If you are not releasing a free app/game and want to get paid outside of the US. Go fix the banking and tax first at [Appstore Connect](https://appstoreconnect.apple.com) >> Agreements, Tax and banking. It's not necessarily something that has to happen now, but get it over with if you are about to release. Prepare for some serious legal and tax lingo.
 
 ### Create the Certificates you need
+###### IMPORTANT 
+Apple have changed recently the signing for Developer Signed Sandbox builds to no longer use the "Mac Development" Certificate in favour of the new iOS/tvOS/macOS Shared Developer "Apple Development" Certificate. Using the Mac Development certificate causes code signing issues on Catalina with Xcode 11.2 [QUOTE Danoli3](https://github.com/UNSH/Unity-Apple-Distribution-Workflow/issues/8)
+
 Go to the [Apple Developer Portal](https://developer.apple.com/account/mac/certificate/development) and create your certificates. Depending on where you want to release your game you will need different certs. These serve as an identity that will be added to your iCloud keychain and allow you to codesign and create your provisioning profiles later. [More on certificate names here](https://stackoverflow.com/a/13603031) [And here](https://stackoverflow.com/questions/29039462/which-certificate-should-i-use-to-sign-my-mac-os-x-application/49015213) [What happens when you use the wrong here](https://stackoverflow.com/questions/21295255/productsigned-mac-app-not-installing-in-computers-that-are-not-mine)
 
 ##### INSTALLING CERTIFICATES
