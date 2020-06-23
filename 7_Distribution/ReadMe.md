@@ -54,10 +54,10 @@ You can test your Appstore build with the "dev" option and "Mac Appstore validat
 
 #### SANDBOX LOGIN (testing account login)
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
-When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
+When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at App Store Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
 
-### Go to Itunes connect and open your app again
+### Go to App Store Connect and open your app again
 Fill in the details for your App such as description, keywords,... Make sure here you **DO NOT reference other platforms**. 
 
 Now add Screenshots (Min 1 - Max 10) as they are required for your upload [(Screenshot specifications)](https://help.apple.com/app-store-connect/#/devd274dd925). If you have it also add your app preview video. [guidelines](https://developer.apple.com/app-store/app-previews/)
@@ -72,19 +72,23 @@ After filling in the form, you will also need to spend some time to take screens
 
 **IMPORTANT** Once you upload your build for review with your screenshots, those screenshots are stuck. Meaning you need to upload a new build to replace the previous screenshots.
 
-### Use application loader to send your app to Apple.
+### Use Transporter to send your app to Apple.
+
+**XCODE11** Download 'Transporter' from the macOS App Store [here](https://apps.apple.com/us/app/transporter/id1450874784?mt=12). (Note: This is Apple's replacement for Application Loader, which was originally part of Xcode, but was removed in Xcode 11). Run Transporter, sign in, drag the pkg into the app and upload.
+
+DEPRICATED 
+
 **XCODE11** Application loader has been removed from Xcode 11 so either download an older version [here](https://developer.apple.com/download/more/?name=Xcode) Or download [application Loader 3.0 here](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 To use the old Application loader you need to generate an APP-SPECIFIC PASSWORD [at Apple here] (https://appleid.apple.com/account/manage) and give this password when prompted.
 
 **CREDIT** [Link](https://forums.xamarin.com/discussion/170085/xcode-11-and-upload-ipa-file-without-application-loader)
 
-DEPRICATED 
 In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader. 
 
 
 ### Check if your build got through. 
-Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
+Go to [App Store Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
 
 ### Add your build for review
 Now open the Prepare for submission (in the Appstore tab of Your game/app). Select your build, fill in the contact info and click on Send for review.
