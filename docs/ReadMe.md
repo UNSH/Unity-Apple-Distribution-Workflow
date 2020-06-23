@@ -100,7 +100,7 @@ DO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS**
 
 	./RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep
 
-The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Application Loader.
+The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Transporter.
 
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
@@ -751,16 +751,19 @@ After filling in the form, you will also need to spend some time to take screens
 
 **IMPORTANT** Once you upload your build for review with your screenshots, those screenshots are stuck. Meaning you need to upload a new build to replace the previous screenshots.
 
-### Use application loader to send your app to Apple.
+### Use Transporter to send your app to Apple.
+
+**XCODE11** Download 'Transporter' from the macOS App Store [here](https://apps.apple.com/us/app/transporter/id1450874784?mt=12). (Note: This is Apple's replacement for Application Loader, which was originally part of Xcode, but was removed in Xcode 11). Run Transporter, sign in, drag the pkg into the app and upload.
+
+DEPRICATED 
+
 **XCODE11** Application loader has been removed from Xcode 11 so either download an older version [here](https://developer.apple.com/download/more/?name=Xcode) Or download [application Loader 3.0 here](https://itunesconnect.apple.com/apploader/ApplicationLoader_3.0.dmg)
 
 To use the old Application loader you need to generate an APP-SPECIFIC PASSWORD [at Apple here] (https://appleid.apple.com/account/manage) and give this password when prompted.
 
 **CREDIT** [Link](https://forums.xamarin.com/discussion/170085/xcode-11-and-upload-ipa-file-without-application-loader)
 
-DEPRICATED 
 In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader. 
-
 
 ### Check if your build got through. 
 Go to [App Store Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.

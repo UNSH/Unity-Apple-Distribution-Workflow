@@ -100,7 +100,7 @@ DO NOT RUN IF YOU HAVE NOT FINISHED THE STEPS**
 
 	./RepeatForUpdatedBuild -q -t appstore -i 'TEAM NAME (XXXXXXXXXX)' -s deep
 
-The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Application Loader.
+The only thing that needs to be done manually is placing the build in the right directory, and uploading the final package via Transporter.
 
 ## PM or ask at [UNITY THREAD](https://forum.unity.com/threads/unity-appstore-distribution-workflow-guide.542735/) or to contribute
 As we will not be constantly uploading games to the App Store it might be good to have other people pitching in so that there's a central point to get help that doesn't age. So anyone who wants to become a contributor just pm me on git even if it is to just add some documentation.
