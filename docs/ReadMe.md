@@ -199,10 +199,10 @@ Enable any services such as (iCloud, Game Center, ...) you are going to use and 
 When enabling iCloud support in an Identifier on the Apple developer website, make sure to also click the "edit" button to the right, and put a checkmark next to the iCloud container(s) your game will be using (if they aren't checked already).
 
 
-### Create a new app in iTunes Connect
-Go to [iTunes connect](https://appstoreconnect.apple.com) and create a new (macOS) app.
+### Create a new app in App Store Connect
+Go to [App Store Connect](https://appstoreconnect.apple.com) and create a new (macOS) app.
 
-**[QUOTE Victor Leung](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)** *Login to iTunes Connect, choose My Apps > “+” > “New Mac App”, fill in the values and choose the bundle ID matches with the previous step. The prefix field would be the game name, such us ufo in my case.* 
+**[QUOTE Victor Leung](https://medium.com/@victorleungtw/submit-unity-3d-game-to-mac-app-store-1b99c3b31412)** *Login to App Store Connect, choose My Apps > “+” > “New Mac App”, fill in the values and choose the bundle ID matches with the previous step. The prefix field would be the game name, such us ufo in my case.* 
 
 ### Create your provisioning profiles
 
@@ -269,7 +269,7 @@ If you want to build for outside the Appstore, make sure you uncheck Mac Appstor
 |**Version** | Build or version number should always be increased each time you upload to the Appstore as you cannot upload a package with identical version & build [More on Version & build](https://stackoverflow.com/a/19728342)|
 |**Build**| Used to upload packages to the Appstore that you do not want to show in your public version. Can be the same as ShortVersionString, but if you want to change your screenshots at the Appstore you will need to send them a new package, with build you could hide this new version without increasing your version number.|
 
-Don't use 0 in your decimals when you define your version.  e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on Itunes Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to iTunes Connect anymore forcing you to jump from 1.01 to 1.11. So either 1.0.1 or 1.11
+Don't use 0 in your decimals when you define your version.  e.g. to 1.1XX. If you use 1.01 Apple will set your version to 1.1 on App Store Connect, it will show 1.01 on the Appstore page, but you will not be able to upload a 1.1 version to App Store Connect anymore forcing you to jump from 1.01 to 1.11. So either 1.0.1 or 1.11
 
 ### Make sure:
 - If you are building for more platforms not to include links or references to them.
@@ -733,10 +733,10 @@ You can test your Appstore build with the "dev" option and "Mac Appstore validat
 
 #### SANDBOX LOGIN (testing account login)
 [**QUOTE "Zwilnik @ Strange flavour"**](http://www.strangeflavour.com/creating-mac-app-store-games-unity/)
-When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at iTunes Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
+When you launch the game, you should see a dialog pop up that tells you that the game was purchased by a different account, so you need to sign in with one of your Mac App Store Sandbox test IDs here for the game to launch. Don’t use your normal login, it must be a Sandbox ID. You can create sandbox users [here at App Store Connect](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/users_roles/sandbox_users)
 
 
-### Go to Itunes connect and open your app again
+### Go to App Store Connect and open your app again
 Fill in the details for your App such as description, keywords,... Make sure here you **DO NOT reference other platforms**. 
 
 Now add Screenshots (Min 1 - Max 10) as they are required for your upload [(Screenshot specifications)](https://help.apple.com/app-store-connect/#/devd274dd925). If you have it also add your app preview video. [guidelines](https://developer.apple.com/app-store/app-previews/)
@@ -763,7 +763,7 @@ In Xcode Top Menu "Xcode" > Open Developer Tools > Application loader.
 
 
 ### Check if your build got through. 
-Go to [Itunes Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
+Go to [App Store Connect](https://appstoreconnect.apple.com) > Your App > Activity and check if your build is there. After uploading a build it can take **5 minutes to 1 hour** (or longer) to finish processing in Appstore connect.
 
 ### Add your build for review
 Now open the Prepare for submission (in the Appstore tab of Your game/app). Select your build, fill in the contact info and click on Send for review.
